@@ -1,3 +1,16 @@
 .btn-lg:hover{
     cursor: pointer;
 }
+
+#navbar{
+    background-color: #91daf2;
+}
+
+#map{
+    background-color: #78c4de;
+    min-height: 500px;
+}
+
+#container{
+    /* background-color: #d7f0f7; */
+}
