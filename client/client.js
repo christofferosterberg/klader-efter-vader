@@ -1,4 +1,4 @@
-
+const host = 'http://localhost:3000/'
 
 $('document').ready(function(){
     $('#nav-logo').click(viewStart)
@@ -12,8 +12,29 @@ function loadContainer(src, viewToLoad){
 
 function viewStart(){
     loadContainer('home.html', function(){
+        $.ajax({
+            url: host + 'weather',
+            type: 'GET',
+            success: fillHomeWeather
+        })
         $('#see-clothes').click(viewQuestions)
     })
+}
+
+function fillHomeWeather(resp){
+    stockholm  = findWeatherInfo(resp, 'Stockholm')
+    gothenburg = findWeatherInfo(resp, 'Göteborg')
+    malmo      = findWeatherInfo(resp, 'Malmö')
+
+    $('#stockholm-home').append($('<p></p>').text(stockholm.description))
+    $('#gothenburg-home').append($('<p></p>').text(gothenburg.description))
+    $('#malmo-home').append($('<p></p>').text(malmo.description))
+}
+
+function findWeatherInfo(allWeathers, targetCity){
+    for (const weather of allWeathers){
+        if(weather.city_name == targetCity){return weather}
+    }
 }
 
 function viewQuestions(){
