@@ -141,6 +141,10 @@ def weather():
             weatherData.append(weather.serialize())
         return jsonify(weatherData)
 
+@app.route('/clothes-info/<city>', methods=['GET'])
+def getClothesChoice(city):
+    print('info om kädval i ' + city)
+    return 'hej'
 
 if __name__ == '__main__':
     app.run(debug=True, port=3000)
