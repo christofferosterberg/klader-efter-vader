@@ -27,8 +27,44 @@ function fillHomeWeather(resp){
     malmo      = findWeatherInfo(resp, 'Malmö')
 
     $('#stockholm-home').append($('<p></p>').text(stockholm.description))
+    $('#stockholm-icon').addClass('fa-solid ' + getIcon(stockholm.value))
     $('#gothenburg-home').append($('<p></p>').text(gothenburg.description))
+    $('#gothenburg-icon').addClass('fa-solid ' + getIcon(gothenburg.value))
     $('#malmo-home').append($('<p></p>').text(malmo.description))
+    $('#malmo-icon').addClass('fa-solid ' + getIcon(malmo.value))
+    $('#weather-now-header').append(' (' + stockholm.datetime.slice(17,22) + ')')
+}
+
+function getIcon(value){
+    icons = ['fa-sun',
+            'fa-cloud-sun',
+            'fa-cloud-sun',
+            'fa-cloud-sun',
+            'fa-cloud-sun',
+            'fa-cloud',
+            'fa-cloud-smog',
+            'fa-droplet',
+            'fa-cloud-rain',
+            'fa-cloud-showers-heavy',
+            'fa-cloud-bolt',
+            'fa-droplet',
+            'fa-cloud-rain',
+            'fa-cloud-showers-heavy',
+            'fa-snowflake',
+            'fa-snowflake',
+            'fa-snowflake',
+            'fa-droplet',
+            'fa-cloud-rain',
+            'fa-cloud-showers-heavy',
+            'fa-cloud-bolt',
+            'fa-snowflake',
+            'fa-snowflake',
+            'fa-snowflake',
+            'fa-snowflake',
+            'fa-snowflake',
+            'fa-snowflake',
+            ]
+    return icons[value-1]
 }
 
 function findWeatherInfo(allWeathers, targetCity){

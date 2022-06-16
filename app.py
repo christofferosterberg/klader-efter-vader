@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import requests
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey, delete
@@ -36,6 +36,7 @@ class Weather(db.Model):
     id          = db.Column(db.Integer, primary_key=True)
     datetime    = db.Column(db.DateTime, nullable=False)
     description = db.Column(db.Text(30), nullable=False)
+    value       = db.Column(db.Integer, nullable=False)
     temperature = db.Column(db.Float, nullable=False)
     windSpeed   = db.Column(db.Float, nullable=False)
 
@@ -43,10 +44,10 @@ class Weather(db.Model):
     city_name   = db.Column(db.String(50), nullable=False)
 
     def __repr__(self):
-        return '<Weather {}: {} {} {} {} {} {}>'.format(self.id, self.datetime, self.description, self.temperature, self.windSpeed, self.city_id, self.city_name)
+        return '<Weather {}: {} {} {} {} {} {} {}>'.format(self.id, self.datetime, self.description, self.value, self.temperature, self.windSpeed, self.city_id, self.city_name)
 
     def serialize(self):
-        return dict(id=self.id, datetime=self.datetime, description=self.description, temperature=self.temperature, windSpeed=self.windSpeed, city_id=self.city_id, city_name=self.city_name)
+        return dict(id=self.id, datetime=self.datetime, description=self.description, value=self.value, temperature=self.temperature, windSpeed=self.windSpeed, city_id=self.city_id, city_name=self.city_name)
     
 
 
@@ -68,7 +69,7 @@ def translateWeatherDescription(value):
         3: 'Moln kommer och går',
         4: 'Halvklart, moln finns absolut',
         5: 'Väldigt mycket moln :(',
-        6: 'Ingen sol öht D:',
+        6: 'Ingen sol öht :(',
         7: 'Dimma, kör försiktigt!',
         8: 'Några få regnskurar kan förekomma',
         9: 'Det kommer bli regnskurar',
@@ -111,10 +112,11 @@ def getWeatherData():
 
             parameters  = timeSerie['parameters']
             description = translateWeatherDescription(int(parameters[18]['values'][0]))
+            value       = int(parameters[18]['values'][0])
             temperature = parameters[1]['values'][0]
             windSpeed   = parameters[4]['values'][0]
 
-            newWeather = Weather(datetime=str_datetime(dt), description=description, temperature=temperature, windSpeed=windSpeed, city_id=city.id, city_name=city.name)
+            newWeather = Weather(datetime=str_datetime(dt), description=description, value=value, temperature=temperature, windSpeed=windSpeed, city_id=city.id, city_name=city.name)
             db.session.add(newWeather)
     
     db.session.commit()
