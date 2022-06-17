@@ -141,10 +141,56 @@ def weather():
             weatherData.append(weather.serialize())
         return jsonify(weatherData)
 
-@app.route('/clothes-info/<city>', methods=['GET'])
-def getClothesChoice(city):
-    print('info om kädval i ' + city)
-    return 'hej'
+@app.route('/clothes-info/<city_name>', methods=['GET'])
+def getClothesChoice(city_name):
+    city = City.query.filter_by(name=city_name).first()
+    weatherData = Weather.query.filter_by(city_id = city.id).all()
+    weather1 = weatherData[1]
+    weather2 = weatherData[7]
+    print(weather1)
+    print(weather2)
+    clothes = getClothes(weather1, weather2)
+    return jsonify(clothes)
+
+def getClothes(weather1, weather2):
+    clothesOptions = {
+        1: 'en skön t-shirt och ett par shorts eller kjol. Glöm inte solkrämen!', #strålande sol och varmt
+        2: 'ett par långbyxor och en längre tröja eller jacka, det ska inte bli jättevarmt trots solen.',
+        3: 'en tjocktröja och eventuellt även en jacka. Det är kallt idag.',
+        4: 'regnkläder kommer behövas!'
+    }
+    clothesCategory1 = getClothesCategory(weather1.value, weather1.temperature)
+    clothesCategory2 = getClothesCategory(weather2.value, weather2.temperature)
+
+    if (clothesCategory1 == clothesCategory2):
+        return 'Ta på dig ' + clothesOptions[clothesCategory1]
+    else:
+        return 'Ta på dig ' + clothesOptions[clothesCategory1] + ' Ta även med dig ' + clothesOptions[clothesCategory2]
+
+
+def getClothesCategory(value, temperature):
+    weatherCategory = 0
+    if (value > 0 and value < 4):
+        weatherCategory = 1
+    elif ((value > 4 and value < 9) or value == 18):
+        weatherCategory = 2
+    elif ((value > 8 and value < 18) or value > 18):
+        weatherCategory = 3
+    
+    if (weatherCategory == 1 and temperature > 20):
+        return 1
+    elif (weatherCategory == 1):
+        return 2
+    elif (weatherCategory == 2 and temperature > 20):
+        return 2
+    elif (weatherCategory == 2):
+        return 3
+    elif (weatherCategory == 3 and temperature > 20):
+        return 4
+    else:
+        return 5
+    
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=3000)

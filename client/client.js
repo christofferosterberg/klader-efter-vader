@@ -24,8 +24,8 @@ function viewStart(){
 
 function fillHomeWeather(resp){
     stockholm  = findWeatherInfo(resp, 'Stockholm')
-    gothenburg = findWeatherInfo(resp, 'Göteborg')
-    malmo      = findWeatherInfo(resp, 'Malmö')
+    gothenburg = findWeatherInfo(resp, 'Gothenburg')
+    malmo      = findWeatherInfo(resp, 'Malmo')
 
     $('#stockholm-home').append($('<p></p>').text(stockholm.description))
     $('#stockholm-icon').addClass('fa-solid ' + getIcon(stockholm.value))
@@ -90,7 +90,8 @@ function showClothes(){
 }
 
 function showTheText(resp){
-    
+    $('#clothes-info').empty()
+    $('#clothes-info').append($('<p></p>').text(resp))
 }
 
 // function viewQuestions(){
