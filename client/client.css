@@ -1,0 +1,36 @@
+.btn-lg:hover{
+    cursor: pointer;
+}
+
+#navbar{
+    background-color: #91daf2;
+}
+
+#map{
+    background-image: url("../images/sweden-map.png");
+    background-repeat: no-repeat;
+    max-width: 294px;
+    height: 594px;
+}
+
+.map-icon{
+    font-size: 200%;
+}
+
+#stockholm-map{
+    position:absolute;
+    margin-top: 392px; /*[wherever you want it]*/
+    margin-left: 155px; /*[wherever you want it]*/
+}
+
+#gothenburg-map{
+    position:absolute;
+    margin-top: 455px; /*[wherever you want it]*/
+    margin-left: 20px; /*[wherever you want it]*/
+}
+
+#malmo-map{
+    position:absolute;
+    margin-top: 542px; /*[wherever you want it]*/
+    margin-left: 45px; /*[wherever you want it]*/
+}

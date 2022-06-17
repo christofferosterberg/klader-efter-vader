@@ -1,0 +1,35 @@
+<h1>Välkommen till Kläder efter väder!</h1>
+<div class="row">
+    <div class="col">
+        <h2 id="weather-now-header">Vädret just nu</h2>
+        <div id="stockholm-home">
+            <h3>Stockholm</h3>
+        </div>
+        <div id="gothenburg-home">
+            <h3>Göteborg</h3>
+        </div>
+        <div id="malmo-home">
+            <h3>Malmö</h3>
+        </div>
+        <div id="see-clothes" type="button" class="btn btn-primary btn-lg">
+            <h2>Se vilka kläder du ska ta på dig idag!</h2>
+        </div>
+        <div id="select-city" class="d-none">
+            <h3>Vilken stad bor du i?</h3>
+            <select id="chosen-city" class="form-control">
+                <option value="-1">--</option>
+                <option value="Stockholm">Stockholm</option> 
+                <option value="Gothenburg">Göteborg</option>
+                <option value="Malmo">Malmö</option>
+            </select>
+        </div>
+        <div id="clothes-info">
+
+        </div>
+    </div>
+    <div id="map" class="col rounded">
+        <p class="map-icon" id="stockholm-map"><i id="stockholm-icon"></i></p>
+        <p class="map-icon" id="gothenburg-map"><i id="gothenburg-icon"></i></p>
+        <p class="map-icon" id="malmo-map"><i id="malmo-icon"></i></p>
+    </div>
+</div>
