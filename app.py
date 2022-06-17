@@ -147,8 +147,6 @@ def getClothesChoice(city_name):
     weatherData = Weather.query.filter_by(city_id = city.id).all()
     weather1 = weatherData[1]
     weather2 = weatherData[7]
-    print(weather1)
-    print(weather2)
     clothes = getClothes(weather1, weather2)
     return jsonify(clothes)
 

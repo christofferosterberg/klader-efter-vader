@@ -80,8 +80,7 @@ function viewCityPicker(){
 }
 
 function showClothes(){
-    var selectedCity = $("#chosen-city option:selected").val();
-    console.log('du valde ' + selectedCity)
+    var selectedCity = $("#chosen-city option:selected").val()
     $.ajax({
         url: host + 'clothes-info/'+ selectedCity,
         type: 'GET',
