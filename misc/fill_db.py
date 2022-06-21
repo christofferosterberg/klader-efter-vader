@@ -21,7 +21,7 @@ db.session.commit()
 
 
 for city in City.query.all():
-    data = requests.get('http://api.openweathermap.org/geo/1.0/direct?q=' + city.name + ',SE&limit=1&appid=0dad8afa334f9da51de36d07e5d4836f').json()
+    data = requests.get('http://api.openweathermap.org/geo/1.0/direct?q=' + city.name + ',SE&limit=1&appid={API-key}').json()
     if (len(data) == 0):
         City.query.filter_by(id=city.id).delete()
         db.session.commit()
