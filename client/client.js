@@ -23,9 +23,9 @@ function viewStart(){
 }
 
 function fillHomeWeather(resp){
-    stockholm  = findWeatherInfo(resp, 'Stockholm')
-    gothenburg = findWeatherInfo(resp, 'Gothenburg')
-    malmo      = findWeatherInfo(resp, 'Malmo')
+    stockholm  = findWeatherInfo(resp, 'Stockholm ')
+    gothenburg = findWeatherInfo(resp, 'Göteborg ')
+    malmo      = findWeatherInfo(resp, 'Malmö ')
 
     $('#stockholm-home').append($('<p></p>').text(stockholm.description))
     $('#stockholm-icon').addClass('fa-solid ' + getIcon(stockholm.value))

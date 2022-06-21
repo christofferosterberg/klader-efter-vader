@@ -22,8 +22,8 @@ host = 'http://localhost:3000'
 class City(db.Model):
     id        = db.Column(db.Integer, primary_key=True)
     name      = db.Column(db.String(50), unique=True, nullable=False)
-    longitude = db.Column(db.Float, nullable=False)
-    latitude  = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=True)
+    latitude  = db.Column(db.Float, nullable=True)
     weathers  = relationship('Weather')
 
     def __repr__(self):

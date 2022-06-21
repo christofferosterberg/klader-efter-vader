@@ -1,13 +1,14 @@
 from app import db, City
+import json
+
+# imports city data from json-file to db, including names and coordinates
 
 db.drop_all()
 db.create_all()
 
-stockholm  = City(name='Stockholm', longitude=18.0686, latitude=59.3294)
-gothenburg = City(name='Gothenburg', longitude=11.9810, latitude=57.6717)
-malmo      = City(name='Malmo', longitude=13.0214, latitude=55.5932)
+f = open('cities.json')
+cities = json.load(f)
 
-db.session.add(stockholm)
-db.session.add(gothenburg)
-db.session.add(malmo)
-db.session.commit()
+for city in cities:
+    db.session.add(City(name=city['name'], longitude=city['longitude'], latitude=city['latitude']))
+    db.session.commit()
