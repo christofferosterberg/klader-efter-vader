@@ -97,7 +97,10 @@ def translateWeatherDescription(value):
 def getWeatherData():
     Weather.__table__.drop(db.engine)
     Weather.__table__.create(db.engine)
-    cities = City.query.all()
+    cities = []
+    cities.append(City.query.filter_by(name='Stockholm').first())
+    cities.append(City.query.filter_by(name='Göteborg').first())
+    cities.append(City.query.filter_by(name='Malmö').first())
 
     for city in cities:
         lon = int(round(city.longitude, 0))
@@ -125,7 +128,7 @@ def getWeatherData():
 
 @app.route('/')
 def client():
-    getWeatherData()
+    # getWeatherData()
     return app.send_static_file('client.html')
 
 def getLatestWeather(city_id):
@@ -149,6 +152,13 @@ def getClothesChoice(city_name):
     weather2 = weatherData[7]
     clothes = getClothes(weather1, weather2)
     return jsonify(clothes)
+
+@app.route('/city-names', methods=['GET'])
+def getCityNames(city_name):
+    cities = []
+    for city in City.query.all():
+        cities.append(city)
+    return jsonify(cities)
 
 def getClothes(weather1, weather2):
     clothesOptions = {

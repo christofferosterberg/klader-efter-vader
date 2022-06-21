@@ -23,9 +23,9 @@ function viewStart(){
 }
 
 function fillHomeWeather(resp){
-    stockholm  = findWeatherInfo(resp, 'Stockholm ')
-    gothenburg = findWeatherInfo(resp, 'Göteborg ')
-    malmo      = findWeatherInfo(resp, 'Malmö ')
+    stockholm  = findWeatherInfo(resp, 'Stockholm')
+    gothenburg = findWeatherInfo(resp, 'Göteborg')
+    malmo      = findWeatherInfo(resp, 'Malmö')
 
     $('#stockholm-home').append($('<p></p>').text(stockholm.description))
     $('#stockholm-icon').addClass('fa-solid ' + getIcon(stockholm.value))
@@ -77,6 +77,13 @@ function findWeatherInfo(allWeathers, targetCity){
 function viewCityPicker(){
     $('#see-clothes').addClass('d-none')
     $('#select-city').removeClass('d-none')
+    $.ajax({
+        url: host + 'city-names',
+        type: 'GET',
+        success: function(){
+
+        }
+    })
 }
 
 function showClothes(){
@@ -92,6 +99,26 @@ function showTheText(resp){
     $('#clothes-info').empty()
     $('#clothes-info').append($('<p></p>').text(resp))
 }
+
+function myFunction() {
+    document.getElementById("myDropdown").classList.toggle("show");
+  }
+  
+  function filterFunction() {
+    var input, filter, ul, li, a, i;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    div = document.getElementById("myDropdown");
+    a = div.getElementsByTagName("a");
+    for (i = 0; i < a.length; i++) {
+      txtValue = a[i].textContent || a[i].innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        a[i].style.display = "";
+      } else {
+        a[i].style.display = "none";
+      }
+    }
+  } 
 
 // function viewQuestions(){
 //     loadContainer('questions.html', function(){
