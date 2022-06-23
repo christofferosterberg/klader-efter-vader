@@ -30,7 +30,7 @@ function fillHomeWeather(resp){
     gothenburg = findWeatherInfo(resp, 'Göteborg')
     malmo      = findWeatherInfo(resp, 'Malmö')
 
-    $('#weather-now-header').append(' (' + stockholm.datetime.slice(17,22) + ')')
+    $('#weather-now-header').append(' (' + stockholm.hour + ':00)')
     $('#stockholm-home').append($('<p></p>').text(stockholm.description))
     $('#gothenburg-home').append($('<p></p>').text(gothenburg.description))
     $('#malmo-home').append($('<p></p>').text(malmo.description))

@@ -192,7 +192,7 @@ def weather():
 @app.route('/clothes-info/<city_name>', methods=['GET'])
 def getClothesChoice(city_name):
     city = City.query.filter_by(name=city_name).first()
-    if (getLatestWeather(city.id) == None):
+    if (getLatestWeather(city) == None):
         fetchWeather(city)
     weatherData = Weather.query.filter_by(city_id = city.id).all()
     weather1 = weatherData[1]
