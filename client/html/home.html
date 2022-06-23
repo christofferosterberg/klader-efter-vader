@@ -16,26 +16,21 @@
         </div>
         <div id="select-city" class="d-none">
             <h3>Vilken stad bor du i?</h3>
-            <div class="dropdown">
-                <button onclick="myFunction()" class="dropbtn">Dropdown</button>
-                <div id="myDropdown" class="dropdown-content">
-                  <input type="text" placeholder="Sök stad" id="myInput" onkeyup="filterFunction()">
-                </div>
-              </div> 
-            <select id="chosen-city" class="form-control">
-                <option value="-1">--</option>
-                <option value="Stockholm">Stockholm</option> 
-                <option value="Gothenburg">Göteborg</option>
-                <option value="Malmo">Malmö</option>
-            </select>
+            <div class="form-group mb-2">
+                <input list="cities-options" id="all-cities-choice" name="all-cities-choice" />
+                <datalist id="cities-options">
+                </datalist>
+            </div>
+            <button id="submit-city-btn" type="button" class="btn btn-primary mb-2">Se klädval!</button>
+
         </div>
         <div id="clothes-info">
 
         </div>
     </div>
     <div id="map" class="col rounded">
-        <p class="map-icon" id="stockholm-map"><i id="stockholm-icon"></i></p>
+        <!-- <p class="map-icon" id="stockholm-map"><i id="stockholm-icon"></i></p>
         <p class="map-icon" id="gothenburg-map"><i id="gothenburg-icon"></i></p>
-        <p class="map-icon" id="malmo-map"><i id="malmo-icon"></i></p>
+        <p class="map-icon" id="malmo-map"><i id="malmo-icon"></i></p> -->
     </div>
 </div>

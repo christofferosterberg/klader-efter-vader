@@ -14,7 +14,9 @@ function viewStart(){
     loadContainer('home.html', function(){
         $.ajax({
             url: host + 'weather',
-            type: 'GET',
+            contentType: "application/json",
+            type: 'POST',
+            data: JSON.stringify(citiesOnMap),
             success: fillHomeWeather
         })
         $('#see-clothes').click(viewCityPicker)
@@ -23,49 +25,31 @@ function viewStart(){
 }
 
 function fillHomeWeather(resp){
+    fillMap(resp)
     stockholm  = findWeatherInfo(resp, 'Stockholm')
     gothenburg = findWeatherInfo(resp, 'Göteborg')
     malmo      = findWeatherInfo(resp, 'Malmö')
 
-    $('#stockholm-home').append($('<p></p>').text(stockholm.description))
-    $('#stockholm-icon').addClass('fa-solid ' + getIcon(stockholm.value))
-    $('#gothenburg-home').append($('<p></p>').text(gothenburg.description))
-    $('#gothenburg-icon').addClass('fa-solid ' + getIcon(gothenburg.value))
-    $('#malmo-home').append($('<p></p>').text(malmo.description))
-    $('#malmo-icon').addClass('fa-solid ' + getIcon(malmo.value))
     $('#weather-now-header').append(' (' + stockholm.datetime.slice(17,22) + ')')
+    $('#stockholm-home').append($('<p></p>').text(stockholm.description))
+    $('#gothenburg-home').append($('<p></p>').text(gothenburg.description))
+    $('#malmo-home').append($('<p></p>').text(malmo.description))
 }
 
-function getIcon(value){
-    icons = ['fa-sun',
-            'fa-cloud-sun',
-            'fa-cloud-sun',
-            'fa-cloud-sun',
-            'fa-cloud-sun',
-            'fa-cloud',
-            'fa-cloud-smog',
-            'fa-droplet',
-            'fa-cloud-rain',
-            'fa-cloud-showers-heavy',
-            'fa-cloud-bolt',
-            'fa-droplet',
-            'fa-cloud-rain',
-            'fa-cloud-showers-heavy',
-            'fa-snowflake',
-            'fa-snowflake',
-            'fa-snowflake',
-            'fa-droplet',
-            'fa-cloud-rain',
-            'fa-cloud-showers-heavy',
-            'fa-cloud-bolt',
-            'fa-snowflake',
-            'fa-snowflake',
-            'fa-snowflake',
-            'fa-snowflake',
-            'fa-snowflake',
-            'fa-snowflake',
-            ]
-    return icons[value-1]
+function fillMap(weatherData){
+    for (const weather of weatherData){
+        icon = $('<p></p>').addClass('map-icon')
+        icon.attr('id', weather.city_name + '-map')
+        theIcon = $('<i></i>').attr('id', weather.city_name + '-icon')
+        theIcon.addClass('fa-solid ' + icons[weather.value-1]) // the class for correct icon
+        icon.css('position', 'absolute')
+        icon.append(theIcon)
+        // Coordinates
+        icon.css('margin-left', coordinatesForMap[weather.city_name][0])
+        icon.css('margin-top', coordinatesForMap[weather.city_name][1])
+
+        $('#map').append(icon)
+    }
 }
 
 function findWeatherInfo(allWeathers, targetCity){
@@ -77,17 +61,20 @@ function findWeatherInfo(allWeathers, targetCity){
 function viewCityPicker(){
     $('#see-clothes').addClass('d-none')
     $('#select-city').removeClass('d-none')
+    $('#submit-city-btn').click(showClothes)
     $.ajax({
         url: host + 'city-names',
         type: 'GET',
-        success: function(){
-
+        success: function(resp){
+            for (const city of resp){
+                $('#cities-options').append($('<option>').attr('value', city))
+            }
         }
     })
 }
 
 function showClothes(){
-    var selectedCity = $("#chosen-city option:selected").val()
+    var selectedCity = $('#all-cities-choice').val()
     $.ajax({
         url: host + 'clothes-info/'+ selectedCity,
         type: 'GET',
@@ -99,60 +86,3 @@ function showTheText(resp){
     $('#clothes-info').empty()
     $('#clothes-info').append($('<p></p>').text(resp))
 }
-
-function myFunction() {
-    document.getElementById("myDropdown").classList.toggle("show");
-  }
-  
-  function filterFunction() {
-    var input, filter, ul, li, a, i;
-    input = document.getElementById("myInput");
-    filter = input.value.toUpperCase();
-    div = document.getElementById("myDropdown");
-    a = div.getElementsByTagName("a");
-    for (i = 0; i < a.length; i++) {
-      txtValue = a[i].textContent || a[i].innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        a[i].style.display = "";
-      } else {
-        a[i].style.display = "none";
-      }
-    }
-  } 
-
-// function viewQuestions(){
-//     loadContainer('questions.html', function(){
-//         const questions = $('#questions').children()
-//         var questionQueue = createQuestions(questions)
-//         questionQueue.shift()()
-//         var answers = []
-
-//         function createQuestions(questions){
-//             var questionQueue = []
-//             for (const question of questions){
-//                 questionQueue.push(function(){
-//                     $(question).removeClass('d-none')
-//                     $(question).find('button').click(function (event) {
-//                         saveAnswer(event.currentTarget)
-//                         $(question).find('button').off()
-//                         $(question).addClass('d-none')
-//                         if (questionQueue.length > 0) {questionQueue.shift()()}
-//                         else {saveAnswers()}
-//                     })
-//                 })
-//             }
-//             return questionQueue
-//         }
-//         function saveAnswer(answer){
-//             answers.push($(answer).attr('answerNo'))
-//         }
-//         function saveAnswers(){
-//             console.log('alla frågor är svarade!')
-//             console.log(answers)
-//         }
-//     })
-// }
-
-
-
-

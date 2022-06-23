@@ -94,59 +94,54 @@ def translateWeatherDescription(value):
     }
     return weatherInfo[value]
 
-def getWeatherData():
-    Weather.__table__.drop(db.engine)
-    Weather.__table__.create(db.engine)
-    cities = []
-    cities.append(City.query.filter_by(name='Stockholm').first())
-    cities.append(City.query.filter_by(name='Göteborg').first())
-    cities.append(City.query.filter_by(name='Malmö').first())
-
-    for city in cities:
-        lon = int(round(city.longitude, 0))
-        lat = int(round(city.latitude, 0))
-        data = requests.get('https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/'+str(lon)+'/lat/'+str(lat)+'/data.json').json()
-        timeSeries = data['timeSeries']
+def fetchWeather(city):
+    lon = int(round(city.longitude, 0))
+    lat = int(round(city.latitude, 0))
+    data = requests.get('https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/'+str(lon)+'/lat/'+str(lat)+'/data.json').json()
+    timeSeries = data['timeSeries']
     
-        for timeSerie in timeSeries:
-            date = timeSerie['validTime'][0:10]
-            time = timeSerie['validTime'][11:19]
-            dt = str(date) + ' ' + str(time)
+    for timeSerie in timeSeries:
+        date = timeSerie['validTime'][0:10]
+        time = timeSerie['validTime'][11:19]
+        dt = str(date) + ' ' + str(time)
 
-            parameters  = timeSerie['parameters']
-            description = translateWeatherDescription(int(parameters[18]['values'][0]))
-            value       = int(parameters[18]['values'][0])
-            temperature = parameters[1]['values'][0]
-            windSpeed   = parameters[4]['values'][0]
+        parameters  = timeSerie['parameters']
+        description = translateWeatherDescription(int(parameters[18]['values'][0]))
+        value       = int(parameters[18]['values'][0])
+        temperature = parameters[1]['values'][0]
+        windSpeed   = parameters[4]['values'][0]
 
-            newWeather = Weather(datetime=str_datetime(dt), description=description, value=value, temperature=temperature, windSpeed=windSpeed, city_id=city.id, city_name=city.name)
-            db.session.add(newWeather)
-    
-    db.session.commit()
-
-
-
-@app.route('/')
-def client():
-    # getWeatherData()
-    return app.send_static_file('client.html')
+        newWeather = Weather(datetime=str_datetime(dt), description=description, value=value, temperature=temperature, windSpeed=windSpeed, city_id=city.id, city_name=city.name)
+        db.session.add(newWeather)
 
 def getLatestWeather(city_id):
     return Weather.query.filter_by(city_id = city_id).first()
 
-@app.route('/weather', methods=['GET'])
+# ROUTES
+
+@app.route('/')
+def client():
+    return app.send_static_file('client.html')
+
+
+@app.route('/weather', methods=['GET', 'POST'])
 def weather():
-    if request.method == 'GET':
-        cities = City.query.all()
+    if request.method == 'POST':
+        wantedCities = request.json
         weatherData = []
-        for city in cities:
-            weather = getLatestWeather(city.id)
+        for city in wantedCities:
+            theCity = City.query.filter_by(name=city).first()
+            if (getLatestWeather(theCity.id) == None):
+                fetchWeather(theCity)
+            weather = getLatestWeather(theCity.id)
             weatherData.append(weather.serialize())
         return jsonify(weatherData)
 
 @app.route('/clothes-info/<city_name>', methods=['GET'])
 def getClothesChoice(city_name):
     city = City.query.filter_by(name=city_name).first()
+    if (getLatestWeather(city.id) == None):
+        fetchWeather(city)
     weatherData = Weather.query.filter_by(city_id = city.id).all()
     weather1 = weatherData[1]
     weather2 = weatherData[7]
@@ -154,10 +149,10 @@ def getClothesChoice(city_name):
     return jsonify(clothes)
 
 @app.route('/city-names', methods=['GET'])
-def getCityNames(city_name):
+def getCityNames():
     cities = []
     for city in City.query.all():
-        cities.append(city)
+        cities.append(city.name)
     return jsonify(cities)
 
 def getClothes(weather1, weather2):
