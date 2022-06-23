@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import Flask, request, jsonify, render_template
 import requests
 from flask_sqlalchemy import SQLAlchemy
@@ -34,7 +34,11 @@ class City(db.Model):
 
 class Weather(db.Model):
     id          = db.Column(db.Integer, primary_key=True)
-    datetime    = db.Column(db.DateTime, nullable=False)
+    hour        = db.Column(db.Integer, nullable=False)
+    day         = db.Column(db.Integer, nullable=False)
+    month       = db.Column(db.Integer, nullable=False)
+    year        = db.Column(db.Integer, nullable=False)
+    fetched     = db.Column(db.DateTime, nullable=False)
     description = db.Column(db.Text(30), nullable=False)
     value       = db.Column(db.Integer, nullable=False)
     temperature = db.Column(db.Float, nullable=False)
@@ -44,10 +48,12 @@ class Weather(db.Model):
     city_name   = db.Column(db.String(50), nullable=False)
 
     def __repr__(self):
-        return '<Weather {}: {} {} {} {} {} {} {}>'.format(self.id, self.datetime, self.description, self.value, self.temperature, self.windSpeed, self.city_id, self.city_name)
+        return '<Weather {}: {} {} {} {} {} {} {} {} {} {} {}>'.format(self.id, self.hour, self.day, self.month, self.day, 
+        self.fetched, self.description, self.value, self.temperature, self.windSpeed, self.city_id, self.city_name)
 
     def serialize(self):
-        return dict(id=self.id, datetime=self.datetime, description=self.description, value=self.value, temperature=self.temperature, windSpeed=self.windSpeed, city_id=self.city_id, city_name=self.city_name)
+        return dict(id=self.id, hour=self.hour, day=self.day, month=self.month, year=self.year, 
+        fetched = self.fetched, description=self.description, value=self.value, temperature=self.temperature, windSpeed=self.windSpeed, city_id=self.city_id, city_name=self.city_name)
     
 
 
@@ -101,9 +107,10 @@ def fetchWeather(city):
     timeSeries = data['timeSeries']
     
     for timeSerie in timeSeries:
-        date = timeSerie['validTime'][0:10]
-        time = timeSerie['validTime'][11:19]
-        dt = str(date) + ' ' + str(time)
+        year = timeSerie['validTime'][0:4]
+        month = timeSerie['validTime'][5:7]
+        day = timeSerie['validTime'][8:10]
+        hour = timeSerie['validTime'][11:13]
 
         parameters  = timeSerie['parameters']
         description = translateWeatherDescription(int(parameters[18]['values'][0]))
@@ -111,11 +118,58 @@ def fetchWeather(city):
         temperature = parameters[1]['values'][0]
         windSpeed   = parameters[4]['values'][0]
 
-        newWeather = Weather(datetime=str_datetime(dt), description=description, value=value, temperature=temperature, windSpeed=windSpeed, city_id=city.id, city_name=city.name)
+        newWeather = Weather(hour = hour, day = day, month = month, year = year, fetched = datetime.now(), description=description, value=value, temperature=temperature, windSpeed=windSpeed, city_id=city.id, city_name=city.name)
         db.session.add(newWeather)
+        db.session.commit()
 
-def getLatestWeather(city_id):
-    return Weather.query.filter_by(city_id = city_id).first()
+def wrongDay(date1, date2):
+    if (date1.year != date2.year):
+        return True
+    elif (date1.month != date2.month):
+        return True
+    elif (date1.day != date2.day):
+        return True
+    else:
+        return False
+
+def upToDate(weather):
+    last_hour = datetime.now().hour
+    today = datetime.now()
+    print('väder innan: ')
+    print(weather[0])
+    if weather[0].datetime.hour != last_hour or wrongDay(today, weather[0].datetime):
+        Weather.__table__.delete().where(Weather.city_id == weather[0].city_id)
+        fetchWeather(City.query.filter_by(id = weather[0].city_id).first())
+        weather = Weather.query.filter_by(city_id = weather[0].city_id).first()
+    print('väder efter')
+    print(weather)
+    return weather[0]
+
+def updateWeather(weather):
+    return None
+
+def getLatestWeather(city):
+    last_hour = datetime.now().hour
+    today = datetime.now()
+    weather = Weather.query.filter_by(city_id = city.id,
+                                      hour    = last_hour,
+                                      day     = today.day,
+                                      month   = today.month,
+                                      year    = today.year).first()
+    if weather == None:
+        fetchWeather(city)
+        print('hämtar nytt väder för ' + city.name)
+        weather = Weather.query.filter_by(city_id = city.id,
+                                      hour    = last_hour,
+                                      day     = today.day,
+                                      month   = today.month,
+                                      year    = today.year).first()
+        print(weather)
+    # elif not upToDate(weather):
+    #     weather = updateWeather(weather)
+    #     print('uppdaterar väder för ' + city.name)
+    #     print(weather)
+    return weather
 
 # ROUTES
 
@@ -131,9 +185,7 @@ def weather():
         weatherData = []
         for city in wantedCities:
             theCity = City.query.filter_by(name=city).first()
-            if (getLatestWeather(theCity.id) == None):
-                fetchWeather(theCity)
-            weather = getLatestWeather(theCity.id)
+            weather = getLatestWeather(theCity)
             weatherData.append(weather.serialize())
         return jsonify(weatherData)
 
