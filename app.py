@@ -2,9 +2,11 @@ from datetime import datetime, timedelta
 from flask import Flask, request, jsonify, render_template
 import requests
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import ForeignKey, delete
+from sqlalchemy import ForeignKey, delete, false
 from sqlalchemy.orm import relationship
 import pytz
+from pyrecord import Record
+from clothes import createClothesStruct
 
 app = Flask(__name__, static_folder='client', static_url_path='/')
 
@@ -14,6 +16,7 @@ app.config['JWT_SECRET_KEY'] = 'U0A6DRhYvG3XXgzWCUEGvu5F9UuvVCAiSYwicGbKIFpktoSb
 db = SQLAlchemy(app)
 
 timezone = pytz.timezone('Europe/Stockholm')
+clothes_data = createClothesStruct()
 
 host = 'http://localhost:3000'
 
@@ -48,15 +51,12 @@ class Weather(db.Model):
     city_name   = db.Column(db.String(50), nullable=False)
 
     def __repr__(self):
-        return '<Weather {}: {} {} {} {} {} {} {} {} {} {} {}>'.format(self.id, self.hour, self.day, self.month, self.day, 
+        return '<Weather {}: {} {} {} {} {} {} {} {} {} {} {}>'.format(self.id, self.hour, self.day, self.month, self.year, 
         self.fetched, self.description, self.value, self.temperature, self.windSpeed, self.city_id, self.city_name)
 
     def serialize(self):
         return dict(id=self.id, hour=self.hour, day=self.day, month=self.month, year=self.year, 
         fetched = self.fetched, description=self.description, value=self.value, temperature=self.temperature, windSpeed=self.windSpeed, city_id=self.city_id, city_name=self.city_name)
-    
-
-
 
 
 #Gets a datetime in string format "YYYY-MM-DD HH:MM:SS"
@@ -133,20 +133,33 @@ def wrongDay(date1, date2):
         return False
 
 def upToDate(weather):
-    last_hour = datetime.now().hour
-    today = datetime.now()
-    print('väder innan: ')
-    print(weather[0])
-    if weather[0].datetime.hour != last_hour or wrongDay(today, weather[0].datetime):
-        Weather.__table__.delete().where(Weather.city_id == weather[0].city_id)
-        fetchWeather(City.query.filter_by(id = weather[0].city_id).first())
-        weather = Weather.query.filter_by(city_id = weather[0].city_id).first()
-    print('väder efter')
-    print(weather)
-    return weather[0]
+    # last_hour = datetime.now().hour
+    # today = datetime.now()
+    if weather.year != datetime.today().year:
+        return False
+    elif weather.month != datetime.today().month:
+        return False
+    elif weather.day != datetime.today().day:
+        return False
+    elif datetime.now().hour - weather.hour > 5:
+        return False
+    else:
+        return True
+    # print('väder innan: ')
+    # print(weather[0])
+    # if weather[0].datetime.hour != last_hour or wrongDay(today, weather[0].datetime):
+    #     Weather.__table__.delete().where(Weather.city_id == weather[0].city_id)
+    #     fetchWeather(City.query.filter_by(id = weather[0].city_id).first())
+    #     weather = Weather.query.filter_by(city_id = weather[0].city_id).first()
+    # print('väder efter')
+    # print(weather)
+    # return weather[0]
 
 def updateWeather(weather):
-    return None
+    Weather.__table__.delete().where(Weather.city_id == weather[0].city_id)
+    fetchWeather(City.query.filter_by(id = weather[0].city_id).first())
+    weather = Weather.query.filter_by(city_id = weather[0].city_id).first()
+    return weather[0]
 
 def getLatestWeather(city):
     last_hour = datetime.now().hour
@@ -158,17 +171,17 @@ def getLatestWeather(city):
                                       year    = today.year).first()
     if weather == None:
         fetchWeather(city)
-        print('hämtar nytt väder för ' + city.name)
+        # print('hämtar nytt väder för ' + city.name)
         weather = Weather.query.filter_by(city_id = city.id,
                                       hour    = last_hour,
                                       day     = today.day,
                                       month   = today.month,
                                       year    = today.year).first()
-        print(weather)
-    # elif not upToDate(weather):
-    #     weather = updateWeather(weather)
-    #     print('uppdaterar väder för ' + city.name)
-    #     print(weather)
+        # print(weather)
+    elif not upToDate(weather):
+        weather = updateWeather(weather)
+        # print('uppdaterar väder för ' + city.name)
+        # print(weather)
     return weather
 
 # ROUTES
@@ -212,10 +225,13 @@ def getClothes(weather1, weather2):
         1: 'en skön t-shirt och ett par shorts eller kjol. Glöm inte solkrämen!', #strålande sol och varmt
         2: 'ett par långbyxor och en längre tröja eller jacka, det ska inte bli jättevarmt trots solen.',
         3: 'en tjocktröja och eventuellt även en jacka. Det är kallt idag.',
-        4: 'regnkläder kommer behövas!'
+        4: 'regnkläder kommer behövas!',
+        5: 'varma kläder'
     }
     clothesCategory1 = getClothesCategory(weather1.value, weather1.temperature)
     clothesCategory2 = getClothesCategory(weather2.value, weather2.temperature)
+    print(clothesCategory1)
+    print(clothesCategory2)
 
     if (clothesCategory1 == clothesCategory2):
         return 'Ta på dig ' + clothesOptions[clothesCategory1]
