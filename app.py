@@ -6,7 +6,7 @@ from sqlalchemy import ForeignKey, delete, false
 from sqlalchemy.orm import relationship
 import pytz
 from pyrecord import Record
-from clothes import createClothesStruct
+from clothes import createClothesStruct, getClothes
 
 app = Flask(__name__, static_folder='client', static_url_path='/')
 
@@ -36,37 +36,31 @@ class City(db.Model):
         return dict(id=self.id, name=self.name, longitude=self.longitude, latitude=self.latitude)
 
 class Weather(db.Model):
-    id          = db.Column(db.Integer, primary_key=True)
-    hour        = db.Column(db.Integer, nullable=False)
-    day         = db.Column(db.Integer, nullable=False)
-    month       = db.Column(db.Integer, nullable=False)
-    year        = db.Column(db.Integer, nullable=False)
-    fetched     = db.Column(db.DateTime, nullable=False)
-    description = db.Column(db.Text(30), nullable=False)
-    value       = db.Column(db.Integer, nullable=False)
-    temperature = db.Column(db.Float, nullable=False)
-    windSpeed   = db.Column(db.Float, nullable=False)
+    id            = db.Column(db.Integer, primary_key=True)
+    hour          = db.Column(db.Integer, nullable=False)
+    day           = db.Column(db.Integer, nullable=False)
+    month         = db.Column(db.Integer, nullable=False)
+    year          = db.Column(db.Integer, nullable=False)
+    fetched       = db.Column(db.DateTime, nullable=False)
+    description   = db.Column(db.Text(30), nullable=False)
+    value         = db.Column(db.Integer, nullable=False)
+    temperature   = db.Column(db.Float, nullable=False)
+    cloudiness    = db.Column(db.Integer, nullable=False)
+    precipitation = db.Column(db.Float, nullable=False)
+    windSpeed     = db.Column(db.Float, nullable=False)
 
-    city_id     = db.Column(db.Integer, ForeignKey('city.id'))
-    city_name   = db.Column(db.String(50), nullable=False)
+    city_id       = db.Column(db.Integer, ForeignKey('city.id'))
+    city_name     = db.Column(db.String(50), nullable=False)
 
     def __repr__(self):
-        return '<Weather {}: {} {} {} {} {} {} {} {} {} {} {}>'.format(self.id, self.hour, self.day, self.month, self.year, 
-        self.fetched, self.description, self.value, self.temperature, self.windSpeed, self.city_id, self.city_name)
+        return '<Weather {}: {} {} {} {} {} {} {} {} {} {} {} {} {}>'.format(self.id, self.hour, self.day, self.month, self.year, 
+        self.fetched, self.description, self.value, self.temperature, self.cloudiness, self.precipitation, self.windSpeed, self.city_id, self.city_name)
 
     def serialize(self):
         return dict(id=self.id, hour=self.hour, day=self.day, month=self.month, year=self.year, 
-        fetched = self.fetched, description=self.description, value=self.value, temperature=self.temperature, windSpeed=self.windSpeed, city_id=self.city_id, city_name=self.city_name)
+        fetched = self.fetched, description=self.description, value=self.value, temperature=self.temperature, 
+        cloudiness = self.cloudiness, precipitation = self.precipitation, windSpeed=self.windSpeed, city_id=self.city_id, city_name=self.city_name)
 
-
-#Gets a datetime in string format "YYYY-MM-DD HH:MM:SS"
-def str_datetime(datetime_string):
-    if datetime_string is None:
-        return datetime_string
-    if isinstance(datetime_string, datetime):
-        return datetime_string
-    date_time = timezone.localize(datetime.strptime(datetime_string, '%Y-%m-%d %H:%M:%S'))
-    return date_time
 
 def translateWeatherDescription(value):
     weatherInfo = {
@@ -114,11 +108,21 @@ def fetchWeather(city):
 
         parameters  = timeSerie['parameters']
         description = translateWeatherDescription(int(parameters[18]['values'][0]))
-        value       = int(parameters[18]['values'][0])
-        temperature = parameters[1]['values'][0]
-        windSpeed   = parameters[4]['values'][0]
+        for parameter in parameters:
+            if parameter['name'] == 't':
+                temperature = parameter['values'][0]
+            elif parameter['name'] == 'Wsymb2':
+                value = int(parameter['values'][0])
+            elif parameter['name'] == 'tcc_mean':
+                cloudiness  = parameter['values'][0]
+            elif parameter['name'] == 'pmean':
+                precipitation = parameter['values'][0]
+            elif parameter['name'] == 'ws':
+                windSpeed = parameter['values'][0]
 
-        newWeather = Weather(hour = hour, day = day, month = month, year = year, fetched = datetime.now(), description=description, value=value, temperature=temperature, windSpeed=windSpeed, city_id=city.id, city_name=city.name)
+        newWeather = Weather(hour = hour, day = day, month = month, year = year, fetched = datetime.now(), description=description, 
+        value=value, temperature=temperature, cloudiness=cloudiness, precipitation=precipitation, windSpeed=windSpeed, 
+        city_id=city.id, city_name=city.name)
         db.session.add(newWeather)
         db.session.commit()
 
@@ -133,8 +137,6 @@ def wrongDay(date1, date2):
         return False
 
 def upToDate(weather):
-    # last_hour = datetime.now().hour
-    # today = datetime.now()
     if weather.year != datetime.today().year:
         return False
     elif weather.month != datetime.today().month:
@@ -145,15 +147,6 @@ def upToDate(weather):
         return False
     else:
         return True
-    # print('väder innan: ')
-    # print(weather[0])
-    # if weather[0].datetime.hour != last_hour or wrongDay(today, weather[0].datetime):
-    #     Weather.__table__.delete().where(Weather.city_id == weather[0].city_id)
-    #     fetchWeather(City.query.filter_by(id = weather[0].city_id).first())
-    #     weather = Weather.query.filter_by(city_id = weather[0].city_id).first()
-    # print('väder efter')
-    # print(weather)
-    # return weather[0]
 
 def updateWeather(weather):
     Weather.__table__.delete().where(Weather.city_id == weather[0].city_id)
@@ -171,17 +164,28 @@ def getLatestWeather(city):
                                       year    = today.year).first()
     if weather == None:
         fetchWeather(city)
-        # print('hämtar nytt väder för ' + city.name)
         weather = Weather.query.filter_by(city_id = city.id,
                                       hour    = last_hour,
                                       day     = today.day,
                                       month   = today.month,
                                       year    = today.year).first()
-        # print(weather)
     elif not upToDate(weather):
         weather = updateWeather(weather)
-        # print('uppdaterar väder för ' + city.name)
-        # print(weather)
+    return weather
+
+
+def getTodaysWeather(city):
+    today = datetime.now()
+    weather = Weather.query.filter_by(city_id = city.id,
+                                      day     = today.day,
+                                      month   = today.month,
+                                      year    = today.year).all()
+    if weather == None:
+        fetchWeather(city)
+        weather = Weather.query.filter_by(city_id = city.id,
+                                      day     = today.day,
+                                      month   = today.month,
+                                      year    = today.year).all()
     return weather
 
 # ROUTES
@@ -205,13 +209,18 @@ def weather():
 @app.route('/clothes-info/<city_name>', methods=['GET'])
 def getClothesChoice(city_name):
     city = City.query.filter_by(name=city_name).first()
-    if (getLatestWeather(city) == None):
-        fetchWeather(city)
-    weatherData = Weather.query.filter_by(city_id = city.id).all()
-    weather1 = weatherData[1]
-    weather2 = weatherData[7]
-    clothes = getClothes(weather1, weather2)
-    return jsonify(clothes)
+    weather = getTodaysWeather(city)
+    weather1 = getClothes(weather[1])[0]
+    if datetime.now().hour <= 17:
+        weather2 = weather[7]
+        weather1 = getClothes(weather[7])
+        if weather1 == weather2:
+            return jsonify('Ta på dig '+ weather1)
+        else:
+            return jsonify('Ta på dig ' + weather1 + ' Ta även med dig ' + weather2)
+    else:
+        return jsonify('Ta på dig '+ weather1)
+
 
 @app.route('/city-names', methods=['GET'])
 def getCityNames():
@@ -219,49 +228,6 @@ def getCityNames():
     for city in City.query.all():
         cities.append(city.name)
     return jsonify(cities)
-
-def getClothes(weather1, weather2):
-    clothesOptions = {
-        1: 'en skön t-shirt och ett par shorts eller kjol. Glöm inte solkrämen!', #strålande sol och varmt
-        2: 'ett par långbyxor och en längre tröja eller jacka, det ska inte bli jättevarmt trots solen.',
-        3: 'en tjocktröja och eventuellt även en jacka. Det är kallt idag.',
-        4: 'regnkläder kommer behövas!',
-        5: 'varma kläder'
-    }
-    clothesCategory1 = getClothesCategory(weather1.value, weather1.temperature)
-    clothesCategory2 = getClothesCategory(weather2.value, weather2.temperature)
-    print(clothesCategory1)
-    print(clothesCategory2)
-
-    if (clothesCategory1 == clothesCategory2):
-        return 'Ta på dig ' + clothesOptions[clothesCategory1]
-    else:
-        return 'Ta på dig ' + clothesOptions[clothesCategory1] + ' Ta även med dig ' + clothesOptions[clothesCategory2]
-
-
-def getClothesCategory(value, temperature):
-    weatherCategory = 0
-    if (value > 0 and value < 4):
-        weatherCategory = 1
-    elif ((value > 4 and value < 9) or value == 18):
-        weatherCategory = 2
-    elif ((value > 8 and value < 18) or value > 18):
-        weatherCategory = 3
-    
-    if (weatherCategory == 1 and temperature > 20):
-        return 1
-    elif (weatherCategory == 1):
-        return 2
-    elif (weatherCategory == 2 and temperature > 20):
-        return 2
-    elif (weatherCategory == 2):
-        return 3
-    elif (weatherCategory == 3 and temperature > 20):
-        return 4
-    else:
-        return 5
-    
-
 
 if __name__ == '__main__':
     app.run(debug=True, port=3000)
