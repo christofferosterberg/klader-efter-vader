@@ -6,22 +6,16 @@ $('document').ready(function(){
     viewStart()
 })
 
-function loadContainer(src, viewToLoad){
-    $('#container').load('html/' + src, viewToLoad)
-}
-
 function viewStart(){
-    loadContainer('home.html', function(){
-        $.ajax({
-            url: host + 'weather',
-            contentType: "application/json",
-            type: 'POST',
-            data: JSON.stringify(citiesOnMap),
-            success: fillHomeWeather
-        })
-        $('#see-clothes').click(viewCityPicker)
-        $("#chosen-city").change(showClothes)
+    $.ajax({
+        url: host + 'weather',
+        contentType: "application/json",
+        type: 'POST',
+        data: JSON.stringify(citiesOnMap),
+        success: fillHomeWeather
     })
+    $('#see-clothes').click(viewCityPicker)
+    $("#chosen-city").change(showClothes)
 }
 
 function fillHomeWeather(resp){
