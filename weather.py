@@ -3,6 +3,7 @@ from sqlalchemy import ForeignKey
 import requests
 from datetime import datetime
 from city import City
+from sqlalchemy import delete
 
 class Weather(db.Model):
     id            = db.Column(db.Integer, primary_key=True)
@@ -88,7 +89,6 @@ def fetchWeather(city):
                 precipitation = parameter['values'][0]
             elif parameter['name'] == 'ws':
                 windSpeed = parameter['values'][0]
-
         newWeather = Weather(hour = hour, day = day, month = month, year = year, fetched = datetime.now(), description=description, 
         value=value, temperature=temperature, cloudiness=cloudiness, precipitation=precipitation, windSpeed=windSpeed, 
         city_id=city.id, city_name=city.name)
@@ -96,16 +96,16 @@ def fetchWeather(city):
         db.session.commit()
 
 def upToDate(weather):
-    print(datetime.now().hour - weather.fetched.hour)
     if (datetime.now().hour - weather.fetched.hour) > 4:
-        print('uppdaterar väder')
         return False
     else:
-        print('vädret behöver inte uppdateras')
         return True
 
 def updateWeather(city):
-    Weather.__table__.delete().where(Weather.city_id == city.id)
+    weathers = Weather.query.filter_by(city_id = city.id)
+    for weather in weathers:
+        db.session.delete(weather)
+        db.session.commit()
     fetchWeather(City.query.filter_by(id = city.id).first())
 
 def getLatestWeather(city):
@@ -139,7 +139,7 @@ def getTodaysWeather(city):
                                       day     = today.day,
                                       month   = today.month,
                                       year    = today.year).all()
-    if weather == None:
+    if len(weather) == 0:
         fetchWeather(city)
         weather = Weather.query.filter_by(city_id = city.id,
                                       day     = today.day,

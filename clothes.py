@@ -163,10 +163,13 @@ def findClothes(clothes_data, weather):
         fourth_key = True
     else:
         fourth_key = False
+    
+
     return clothes_data[first_key][second_key][third_key][fourth_key]
 
 def getClothes(weather):
     from app import clothes_data
+    
     weather_data = {
         'temperature'   : weather.temperature,
         'cloudiness'    : weather.cloudiness,

@@ -43,8 +43,7 @@ def getClothesChoice(city_name):
     weather = getTodaysWeather(city)
     weather1 = getClothes(weather[1])[0]
     if datetime.now().hour <= 17:
-        weather2 = weather[7]
-        weather1 = getClothes(weather[7])
+        weather2 = getClothes(weather[7])[0]
         if weather1 == weather2:
             return jsonify('Ta på dig '+ weather1)
         else:
