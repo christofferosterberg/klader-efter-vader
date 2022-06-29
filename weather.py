@@ -96,22 +96,17 @@ def fetchWeather(city):
         db.session.commit()
 
 def upToDate(weather):
-    if weather.year != datetime.today().year:
-        return False
-    elif weather.month != datetime.today().month:
-        return False
-    elif weather.day != datetime.today().day:
-        return False
-    elif datetime.now().hour - weather.hour > 5:
+    print(datetime.now().hour - weather.fetched.hour)
+    if (datetime.now().hour - weather.fetched.hour) > 4:
+        print('uppdaterar väder')
         return False
     else:
+        print('vädret behöver inte uppdateras')
         return True
 
-def updateWeather(weather):
-    Weather.__table__.delete().where(Weather.city_id == weather[0].city_id)
-    fetchWeather(City.query.filter_by(id = weather[0].city_id).first())
-    weather = Weather.query.filter_by(city_id = weather[0].city_id).first()
-    return weather[0]
+def updateWeather(city):
+    Weather.__table__.delete().where(Weather.city_id == city.id)
+    fetchWeather(City.query.filter_by(id = city.id).first())
 
 def getLatestWeather(city):
     last_hour = datetime.now().hour
@@ -129,7 +124,12 @@ def getLatestWeather(city):
                                       month   = today.month,
                                       year    = today.year).first()
     elif not upToDate(weather):
-        weather = updateWeather(weather)
+        updateWeather(city)
+        weather = Weather.query.filter_by(city_id = city.id,
+                                      hour    = last_hour,
+                                      day     = today.day,
+                                      month   = today.month,
+                                      year    = today.year).first()
     return weather
 
 
