@@ -96,7 +96,9 @@ def fetchWeather(city):
         db.session.commit()
 
 def upToDate(weather):
-    if (datetime.now().hour - weather.fetched.hour) > 4:
+    if datetime.now().day != weather.fetched.day:
+        return False
+    elif datetime.now().hour - weather.fetched.hour > 4:
         return False
     else:
         return True

@@ -1,8 +1,6 @@
 const host = 'http://localhost:3000/'
 
 $('document').ready(function(){
-    $('#nav-logo').click(viewStart)
-    $('#nav-home').click(viewStart)
     viewStart()
 })
 
