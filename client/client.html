@@ -11,6 +11,7 @@
   <script src="https://kit.fontawesome.com/99c64e624b.js" crossorigin="anonymous"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="client.js"></script>
+  <script src="js/constants.js"></script>
 </head>
 
 <body>
@@ -19,26 +20,62 @@
     crossorigin="anonymous"></script>
 
   <nav id="navbar" class="navbar navbar-expand-lg">
-    <div class="container-fluid">
-      <a id="nav-logo" class="navbar-brand" href="#">Kläder Efter Väder</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li id="nav-home" class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Hem</a>
-          </li>
-          <li id="nav-about" class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Om oss</a>
-          </li>
-      </div>
+    <div class="container-fluid d-flex justify-content-center">
+      <h3>Kläder Efter Väder</h3>
     </div>
   </nav>
 
 
   <div class="container shadow p-3 mb-5 bg-body rounded" id="container">
+    <div class="d-flex justify-content-center">
+      <h1 class="ml-5">Välkommen till Kläder Efter Väder!</h1>
+    </div>
+    <p>Kläder efter väder finns här för att hjälpa dig med det svåra i vardagen, att välja kläder! Kanske ser det ut
+      att
+      vara strålande sol just nu men ska bli molnigt och blåsigt ikväll. Kanske är det molnigt nu men ska spöregna om
+      några timmar. Hur det än blir så hjälper vi dig med klädvalet!</p>
+    <div class="row">
+      <div class="col-md p-2">
+
+        <div id="see-clothes" type="button mb-5 mt-2" class="btn btn-primary btn-lg w-100">
+          <h2>Se vilka kläder du ska ta på dig idag!</h2>
+        </div>
+        <div id="select-city" class="d-none">
+          <h3>Vilken stad bor du i?</h3>
+          <div class="form-group mb-2">
+            <input list="cities-options" id="all-cities-choice" name="all-cities-choice" />
+            <datalist id="cities-options">
+            </datalist>
+            <button id="submit-city-btn" type="button" class="btn btn-primary mb-2">Se klädval!</button>
+          </div>
+          <div class="card">
+            <div id="clothes-info" class="card-body">
+            </div>
+  
+          </div>
+        </div>
+        
+      </div>
+      <div class="col-lg p-2">
+        <div class="row">
+          <div class="col">
+            <h2 id="weather-now-header">Vädret just nu</h2>
+            <div id="stockholm-home">
+              <h3>Stockholm</h3>
+            </div>
+            <div id="gothenburg-home">
+              <h3>Göteborg</h3>
+            </div>
+            <div id="malmo-home">
+              <h3>Malmö</h3>
+            </div>
+          </div>
+          <div id="map" class="col-lg mr-5"></div>
+        </div>
+
+
+      </div>
+    </div>
   </div>
 
 </body>

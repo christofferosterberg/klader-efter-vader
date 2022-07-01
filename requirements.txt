@@ -9,6 +9,7 @@ importlib-metadata==4.11.4
 itsdangerous==2.1.2
 Jinja2==3.1.2
 MarkupSafe==2.1.1
+pyrecord==1.0.1
 pytz==2022.1
 requests==2.28.0
 SQLAlchemy==1.4.37

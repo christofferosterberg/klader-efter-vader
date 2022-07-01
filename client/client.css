@@ -3,7 +3,13 @@
 }
 
 #navbar{
-    background-color: #91daf2;
+    background-color: #c9f2ff;
+}
+
+.btn-primary{
+    background-color: #c9f2ff;
+    border-color: #c9f2ff;
+    color: black;
 }
 
 #map{
@@ -33,4 +39,13 @@
     position:absolute;
     margin-top: 542px; /*[wherever you want it]*/
     margin-left: 45px; /*[wherever you want it]*/
+}
+
+#clothes-info{
+    min-height:6rem;
+    background-color: #c9f2ff;
+}
+
+.card{
+    border-color:#c9f2ff;
 }
