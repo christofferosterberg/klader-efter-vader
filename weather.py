@@ -147,4 +147,10 @@ def getTodaysWeather(city):
                                       day     = today.day,
                                       month   = today.month,
                                       year    = today.year).all()
+    elif not upToDate(weather[0]):
+        updateWeather(city)
+        weather = Weather.query.filter_by(city_id = city.id,
+                                      day     = today.day,
+                                      month   = today.month,
+                                      year    = today.year).all()
     return weather
