@@ -1,6 +1,15 @@
 const host = 'http://localhost:3000/'
+var position = null
+
 
 $('document').ready(function(){
+    $('#all-cities-choice').val('')
+    navigator.geolocation.getCurrentPosition((pos) => {
+        position = {
+            'longitude': pos.coords.longitude,
+            'latitude' : pos.coords.latitude
+        }
+    })
     viewStart()
 })
 
@@ -51,18 +60,33 @@ function findWeatherInfo(allWeathers, targetCity){
 }
 
 function viewCityPicker(){
+    
     $('#see-clothes').addClass('d-none')
     $('#select-city').removeClass('d-none')
     $('#submit-city-btn').click(showClothes)
     $.ajax({
-        url: host + 'city-names',
+        url: host + 'cities',
         type: 'GET',
-        success: function(resp){
-            for (const city of resp){
-                $('#cities-options').append($('<option>').attr('value', city))
+        success: autofillCity
+    })
+}
+
+function autofillCity(cities){
+    for (const city of cities){
+        $('#cities-options').append($('<option>').attr('value', city.name))
+    }
+    if (position != null){
+        closestCity = cities[0]
+        closestDistance = Math.sqrt((cities[0].latitude-position['latitude'])**2 + (cities[0].longitude-position['longitude'])**2)
+        for (const city of cities){
+            distance = Math.sqrt(((city.latitude-position['latitude'])**2) + ((city.longitude-position['longitude'])**2))
+            if (distance < closestDistance){
+                closestCity = city
+                closestDistance = distance
             }
         }
-    })
+        $('#all-cities-choice').val(closestCity.name)
+    }
 }
 
 function showClothes(){

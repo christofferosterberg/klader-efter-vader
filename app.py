@@ -52,11 +52,11 @@ def getClothesChoice(city_name):
         return jsonify('Ta på dig '+ weather1)
 
 
-@app.route('/city-names', methods=['GET'])
+@app.route('/cities', methods=['GET'])
 def getCityNames():
     cities = []
     for city in City.query.all():
-        cities.append(city.name)
+        cities.append(city.serialize())
     return jsonify(cities)
 
 if __name__ == '__main__':
