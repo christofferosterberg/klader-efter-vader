@@ -1,8 +1,14 @@
 const host = 'http://localhost:3000/'
 var position = null
 
-
+var map
 $('document').ready(function(){
+    map = L.map('map').setView([61.34, 12.88], 5)
+    var marker = L.marker([61.34, 13.88]).addTo(map)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+    }).addTo(map)
     $('#all-cities-choice').val('')
     navigator.geolocation.getCurrentPosition((pos) => {
         position = {
@@ -49,7 +55,7 @@ function fillMap(weatherData){
         icon.css('margin-left', coordinatesForMap[weather.city_name][0])
         icon.css('margin-top', coordinatesForMap[weather.city_name][1])
 
-        $('#map').append(icon)
+        $('#my-map').append(icon)
     }
 }
 
@@ -59,8 +65,9 @@ function findWeatherInfo(allWeathers, targetCity){
     }
 }
 
-function viewCityPicker(){
-    
+function viewCityPicker() {
+    // map.invalidateSize()
+    $('#map').removeClass('d-none')
     $('#see-clothes').addClass('d-none')
     $('#select-city').removeClass('d-none')
     $('#submit-city-btn').click(showClothes)

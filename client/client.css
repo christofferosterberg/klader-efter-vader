@@ -12,7 +12,7 @@
     color: black;
 }
 
-#map{
+#my-map{
     background-image: url("../images/sweden-map.png");
     background-repeat: no-repeat;
     max-width: 294px;
@@ -49,3 +49,5 @@
 .card{
     border-color:#c9f2ff;
 }
+
+#map { height: 500px; }

@@ -7,7 +7,13 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+    integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+    crossorigin="" />
   <link rel="stylesheet" href="client.css">
+  <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+  integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+  crossorigin=""></script>
   <script src="https://kit.fontawesome.com/99c64e624b.js" crossorigin="anonymous"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="client.js"></script>
@@ -51,10 +57,10 @@
           <div class="card">
             <div id="clothes-info" class="card-body">
             </div>
-  
           </div>
+          
         </div>
-        
+        <div id="map" class="mt-2"></div>
       </div>
       <div class="col-lg p-2">
         <div class="row">
@@ -70,7 +76,7 @@
               <h3>Malmö</h3>
             </div>
           </div>
-          <div id="map" class="col-lg mr-5"></div>
+          <div id="my-map" class="col-lg mr-5"></div>
         </div>
 
 
