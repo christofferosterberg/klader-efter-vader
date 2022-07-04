@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import Flask, request, jsonify
 import pytz
-from clothes import createClothesStruct, getClothes
+from clothes import create_clothes_struct, get_clothes
 from base import db
 from weather import *
 
@@ -14,7 +14,7 @@ app.config['JWT_SECRET_KEY'] = 'U0A6DRhYvG3XXgzWCUEGvu5F9UuvVCAiSYwicGbKIFpktoSb
 db.init_app(app)
 
 timezone = pytz.timezone('Europe/Stockholm')
-clothes_data = createClothesStruct()
+clothes_data = create_clothes_struct()
 
 host = 'http://localhost:3000'
 
@@ -29,21 +29,21 @@ def client():
 @app.route('/weather', methods=['GET', 'POST'])
 def weather():
     if request.method == 'POST':
-        wantedCities = request.json
-        weatherData = []
-        for city in wantedCities:
-            theCity = City.query.filter_by(name=city).first()
-            weather = getLatestWeather(theCity)
-            weatherData.append(weather.serialize())
-        return jsonify(weatherData)
+        wanted_cities = request.json
+        weather_data = []
+        for city in wanted_cities:
+            the_city = City.query.filter_by(name=city).first()
+            weather = get_latest_weather(the_city)
+            weather_data.append(weather.serialize())
+        return jsonify(weather_data)
 
 @app.route('/clothes-info/<city_name>', methods=['GET'])
-def getClothesChoice(city_name):
+def get_clothes_choice(city_name):
     city = City.query.filter_by(name=city_name).first()
-    weather = getTodaysWeather(city)
-    weather1 = getClothes(weather[1])[0]
+    weather = get_todays_weather(city)
+    weather1 = get_clothes(weather[1])
     if datetime.now().hour <= 17:
-        weather2 = getClothes(weather[7])[0]
+        weather2 = get_clothes(weather[7])
         if weather1 == weather2:
             return jsonify('Ta på dig '+ weather1)
         else:
