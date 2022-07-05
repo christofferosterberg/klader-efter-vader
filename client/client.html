@@ -43,24 +43,25 @@
     <div class="row">
       <div class="col-md p-2">
 
-        <div id="see-clothes" type="button mb-5 mt-2" class="btn btn-primary btn-lg w-100">
+        <div id="see-clothes" type="button mb-5 mt-2" class="btn btn-primary btn-lg">
           <h2>Se vilka kläder du ska ta på dig idag!</h2>
         </div>
-        <div id="select-city" class="d-none">
+        <div id="select-city" class="d-none border p-2 rounded">
           <h3>Vilken stad bor du i?</h3>
           <div class="form-group mb-2">
-            <input list="cities-options" id="all-cities-choice" name="all-cities-choice" />
+            <input list="cities-options" id="all-cities-choice" name="all-cities-choice"/>
             <datalist id="cities-options">
             </datalist>
             <button id="submit-city-btn" type="button" class="btn btn-primary mb-2">Se klädval!</button>
+            <button id="cancel-city-btn" type="button" class="btn btn-secondary mb-2">Återgå</button>
           </div>
           <div class="card">
             <div id="clothes-info" class="card-body">
             </div>
           </div>
-          
+          <div id="map" class="mt-2"></div>
         </div>
-        <div id="map" class="mt-2"></div>
+        
       </div>
       <div class="col-lg p-2">
         <div class="row">

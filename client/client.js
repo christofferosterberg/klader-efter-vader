@@ -2,13 +2,16 @@ const host = 'http://localhost:3000/'
 var position = null
 
 var map
+var allCities
+var marker
 $('document').ready(function(){
     map = L.map('map').setView([61.34, 12.88], 5)
-    var marker = L.marker([61.34, 13.88]).addTo(map)
+    map.on('click', updateMarker)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '© OpenStreetMap'
     }).addTo(map)
+    marker = L.marker()
     $('#all-cities-choice').val('')
     navigator.geolocation.getCurrentPosition((pos) => {
         position = {
@@ -28,7 +31,9 @@ function viewStart(){
         success: fillHomeWeather
     })
     $('#see-clothes').click(viewCityPicker)
+    $('#cancel-city-btn').click(hideCityPicker)
     $("#chosen-city").change(showClothes)
+    $('#submit-city-btn').click(showClothes) 
 }
 
 function fillHomeWeather(resp){
@@ -66,11 +71,11 @@ function findWeatherInfo(allWeathers, targetCity){
 }
 
 function viewCityPicker() {
-    // map.invalidateSize()
-    $('#map').removeClass('d-none')
     $('#see-clothes').addClass('d-none')
     $('#select-city').removeClass('d-none')
-    $('#submit-city-btn').click(showClothes)
+    setTimeout(function () {
+        window.dispatchEvent(new Event('resize'));
+    }, 10)
     $.ajax({
         url: host + 'cities',
         type: 'GET',
@@ -78,22 +83,47 @@ function viewCityPicker() {
     })
 }
 
+function hideCityPicker(){
+    $('#see-clothes').removeClass('d-none')
+    $('#select-city').addClass('d-none')
+    $('#all-cities-choice').val('')
+    $('#clothes-info').empty()
+}
+
 function autofillCity(cities){
+    allCities = cities
     for (const city of cities){
         $('#cities-options').append($('<option>').attr('value', city.name))
     }
     if (position != null){
-        closestCity = cities[0]
-        closestDistance = Math.sqrt((cities[0].latitude-position['latitude'])**2 + (cities[0].longitude-position['longitude'])**2)
-        for (const city of cities){
-            distance = Math.sqrt(((city.latitude-position['latitude'])**2) + ((city.longitude-position['longitude'])**2))
+        closestCity = findClosestCity(position['latitude'], position['longitude'])
+        $('#all-cities-choice').val(closestCity.name)
+        pinOnMap(closestCity.latitude, closestCity.longitude)
+    } else {L.marker([61.34, 13.88]).addTo(map)}
+}
+
+function findClosestCity(latitude, longitude){
+    closestCity = allCities[0]
+        closestDistance = Math.sqrt((allCities[0].latitude-latitude)**2 + (allCities[0].longitude-longitude)**2)
+        for (const city of allCities){
+            distance = Math.sqrt(((city.latitude-latitude)**2) + ((city.longitude-longitude)**2))
             if (distance < closestDistance){
                 closestCity = city
                 closestDistance = distance
             }
         }
-        $('#all-cities-choice').val(closestCity.name)
-    }
+        return closestCity
+}
+
+function pinOnMap(latitude, longitude){
+    marker.setLatLng([latitude, longitude])
+    marker.addTo(map)
+}
+
+function updateMarker(e){
+    pinOnMap(e.latlng.lat, e.latlng.lng)
+    closestCity = findClosestCity(e.latlng.lat, e.latlng.lng)
+    $('#all-cities-choice').val(closestCity.name)
 }
 
 function showClothes(){
