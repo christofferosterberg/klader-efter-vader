@@ -11,7 +11,6 @@ class Last_Node:
     def __init__(self, texts):
         self.texts = texts
     def get_clothes(self):
-        print(self.texts[0])
         return self.texts[0]
 
 class Node:
