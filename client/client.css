@@ -41,7 +41,7 @@
     margin-left: 45px; /*[wherever you want it]*/
 }
 
-#clothes-info{
+.info{
     min-height:6rem;
     background-color: #c9f2ff;
 }
