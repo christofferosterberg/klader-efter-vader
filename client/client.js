@@ -41,11 +41,13 @@ function viewStart(){
     $('#update-clothes-btn').click(fetchClothes)
     $('#cancel-clothes-btn').click(hideClothes)
 
-    $('#see-pollen').click(showPollen)
+    $('#see-pollen').click(showPollenOptions)
+    $('.pollen-option').click(showPollen)
     $('#update-pollen-btn').click(fetchPollen)
     $('#cancel-pollen-btn').click(hidePollen)
 
-    $('#see-uv').click(showUV)
+    $('#see-uv').click(showUVOptions)
+    $('.uv-option').click(showUV)
     $('#update-uv-btn').click(fetchUV)
     $('#cancel-uv-btn').click(hideUV)
     
@@ -160,10 +162,16 @@ function showClothesText(resp){
 
 // POLLEN //
 
-function showPollen(){
+function showPollenOptions(){
     $('#see-pollen').addClass('d-none')
+    $('#choose-pollen-div').removeClass('d-none')
+}
+
+function showPollen(e){
+    console.log(e.currentTarget.value)
+    $('#choose-pollen-div').addClass('d-none')
     $('#pollen-div').removeClass('d-none')
-    fetchClothes()
+    fetchPollen(e.currentTarget.value)
 }
 
 function hidePollen(){
@@ -172,10 +180,10 @@ function hidePollen(){
     $('#pollen-info').empty()
 }
 
-function fetchPollen(){
+function fetchPollen(value){
     var selectedCity = $('#all-cities-choice').val()
     $.ajax({
-        url: host + 'pollen-info/'+ selectedCity,
+        url: host + 'pollen-info/'+ selectedCity + '/' + value,
         type: 'GET',
         success: showPollenText
     })
@@ -186,12 +194,17 @@ function showPollenText(resp){
     $('#pollen-info').append($('<p></p>').text(resp))
 }
 
-// POLLEN //
+// UV //
 
-function showUV(){
+function showUVOptions(){
     $('#see-uv').addClass('d-none')
+    $('#choose-uv-div').removeClass('d-none')
+}
+
+function showUV(e){
+    $('#choose-uv-div').addClass('d-none')
     $('#uv-div').removeClass('d-none')
-    fetchClothes()
+    fetchUV(e.currentTarget.value)
 }
 
 function hideUV(){
@@ -200,10 +213,10 @@ function hideUV(){
     $('#uv-info').empty()
 }
 
-function fetchUV(){
+function fetchUV(value){
     var selectedCity = $('#all-cities-choice').val()
     $.ajax({
-        url: host + 'uv-info/'+ selectedCity,
+        url: host + 'uv-info/'+ selectedCity + '/' + value,
         type: 'GET',
         success: showUVText
     })

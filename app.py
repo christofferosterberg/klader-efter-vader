@@ -37,6 +37,14 @@ def weather():
             weather_data.append(weather.serialize())
         return jsonify(weather_data)
 
+
+@app.route('/cities', methods=['GET'])
+def getCityNames():
+    cities = []
+    for city in City.query.all():
+        cities.append(city.serialize())
+    return jsonify(cities)
+
 @app.route('/clothes-info/<city_name>', methods=['GET'])
 def get_clothes_choice(city_name):
     city = City.query.filter_by(name=city_name).first()
@@ -51,13 +59,35 @@ def get_clothes_choice(city_name):
     else:
         return jsonify('Ta på dig '+ weather1)
 
+@app.route('/pollen-info/<city_name>/<value>', methods=['GET'])
+def get_pollen_choice(city_name, value):
+    city = City.query.filter_by(name=city_name).first()
+    return jsonify('hej')
+#     weather = get_todays_pollen(city)
+#     weather1 = get_clothes(weather[1])
+#     if datetime.now().hour <= 17:
+#         weather2 = get_clothes(weather[7])
+#         if weather1 == weather2:
+#             return jsonify('Ta på dig '+ weather1)
+#         else:
+#             return jsonify('Ta på dig ' + weather1 + ' Ta även med dig ' + weather2)
+#     else:
+#         return jsonify('Ta på dig '+ weather1)
 
-@app.route('/cities', methods=['GET'])
-def getCityNames():
-    cities = []
-    for city in City.query.all():
-        cities.append(city.serialize())
-    return jsonify(cities)
+@app.route('/uv-info/<city_name>/<value>', methods=['GET'])
+def get_uv_choice(city_name, value):
+    city = City.query.filter_by(name=city_name).first()
+    return jsonify('hejdå')
+#     weather = get_todays_weather(city)
+#     weather1 = get_clothes(weather[1])
+#     if datetime.now().hour <= 17:
+#         weather2 = get_clothes(weather[7])
+#         if weather1 == weather2:
+#             return jsonify('Ta på dig '+ weather1)
+#         else:
+#             return jsonify('Ta på dig ' + weather1 + ' Ta även med dig ' + weather2)
+#     else:
+#         return jsonify('Ta på dig '+ weather1)
 
 if __name__ == '__main__':
     app.run(debug=True, port=3000)
