@@ -1,5 +1,12 @@
 import requests
 from api_keys import AMBEE_KEY
+
+pollen_arr = [
+    ['Du behöver inte ta någon pollenmedicin idag :)', 'Du behöver inte ta någon pollenmedicin idag :)', 'Om du är extremt allergisk och kan ha andningssvårigheter kan det vara bra med lite medicin idag'],
+    ['Du behöver inte ta någon pollenmedicin idag :)', 'Om du inte har några andningsbesvär generellt behöver du inte ta någon medicin idag', 'Idag kan det vara klokt att ta medicin'],
+    ['Idag kan det vara klokt att ta medicin', 'Idag kan det vara klokt att ta medicin', 'Idag kan det vara klokt att ta medicin'],
+    ['Pollenregn idag! Ta din medicin', 'Pollenregn idag! Ta din medicin', 'Pollenregn idag! Ta din medicin']]
+
 translate = {
     "Low": 0,
     "Moderate": 1,

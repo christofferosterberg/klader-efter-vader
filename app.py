@@ -5,6 +5,7 @@ from clothes import create_clothes_struct, get_clothes
 from base import db
 from weather import *
 from pollen import *
+from uv import *
 
 app = Flask(__name__, static_folder='client', static_url_path='/')
 
@@ -60,11 +61,6 @@ def get_clothes_choice(city_name):
     else:
         return jsonify('Ta på dig '+ weather1)
 
-pollen_arr = [
-    ['Du behöver inte ta någon pollenmedicin idag :)', 'Du behöver inte ta någon pollenmedicin idag :)', 'Om du är extremt allergisk och kan ha andningssvårigheter kan det vara bra med lite medicin idag'],
-    ['Du behöver inte ta någon pollenmedicin idag :)', 'Om du inte har några andningsbesvär generellt behöver du inte ta någon medicin idag', 'Idag kan det vara klokt att ta medicin'],
-    ['Idag kan det vara klokt att ta medicin', 'Idag kan det vara klokt att ta medicin', 'Idag kan det vara klokt att ta medicin'],
-    ['Pollenregn idag! Ta din medicin', 'Pollenregn idag! Ta din medicin', 'Pollenregn idag! Ta din medicin']]
 @app.route('/pollen-info/<city_name>/<value>', methods=['GET'])
 def get_pollen_choice(city_name, value):
     city = City.query.filter_by(name=city_name).first()
@@ -74,17 +70,17 @@ def get_pollen_choice(city_name, value):
 @app.route('/uv-info/<city_name>/<value>', methods=['GET'])
 def get_uv_choice(city_name, value):
     city = City.query.filter_by(name=city_name).first()
-    return jsonify('hejdå')
-#     weather = get_todays_weather(city)
-#     weather1 = get_clothes(weather[1])
-#     if datetime.now().hour <= 17:
-#         weather2 = get_clothes(weather[7])
-#         if weather1 == weather2:
-#             return jsonify('Ta på dig '+ weather1)
-#         else:
-#             return jsonify('Ta på dig ' + weather1 + ' Ta även med dig ' + weather2)
-#     else:
-#         return jsonify('Ta på dig '+ weather1)
+    uv_data = get_todays_uv(city.latitude, city.longitude)
+    print(uv_data)
+    if uv_data < 5:
+        return jsonify(uv_arr[0][int(value)])
+    elif 5 < uv_data < 8:
+        return jsonify(uv_arr[1][int(value)])
+    elif 8 < uv_data < 11:
+        return jsonify(uv_arr[2][int(value)])
+    elif 11 < uv_data:
+        return jsonify(uv_arr[3][int(value)])
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=3000)
