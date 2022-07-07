@@ -4,6 +4,7 @@ import pytz
 from clothes import create_clothes_struct, get_clothes
 from base import db
 from weather import *
+from pollen import *
 
 app = Flask(__name__, static_folder='client', static_url_path='/')
 
@@ -59,20 +60,16 @@ def get_clothes_choice(city_name):
     else:
         return jsonify('Ta på dig '+ weather1)
 
+pollen_arr = [
+    ['Du behöver inte ta någon pollenmedicin idag :)', 'Du behöver inte ta någon pollenmedicin idag :)', 'Om du är extremt allergisk och kan ha andningssvårigheter kan det vara bra med lite medicin idag'],
+    ['Du behöver inte ta någon pollenmedicin idag :)', 'Om du inte har några andningsbesvär generellt behöver du inte ta någon medicin idag', 'Idag kan det vara klokt att ta medicin'],
+    ['Idag kan det vara klokt att ta medicin', 'Idag kan det vara klokt att ta medicin', 'Idag kan det vara klokt att ta medicin'],
+    ['Pollenregn idag! Ta din medicin', 'Pollenregn idag! Ta din medicin', 'Pollenregn idag! Ta din medicin']]
 @app.route('/pollen-info/<city_name>/<value>', methods=['GET'])
 def get_pollen_choice(city_name, value):
     city = City.query.filter_by(name=city_name).first()
-    return jsonify('hej')
-#     weather = get_todays_pollen(city)
-#     weather1 = get_clothes(weather[1])
-#     if datetime.now().hour <= 17:
-#         weather2 = get_clothes(weather[7])
-#         if weather1 == weather2:
-#             return jsonify('Ta på dig '+ weather1)
-#         else:
-#             return jsonify('Ta på dig ' + weather1 + ' Ta även med dig ' + weather2)
-#     else:
-#         return jsonify('Ta på dig '+ weather1)
+    pollen_data = get_todays_pollen(city.latitude, city.longitude)
+    return jsonify(pollen_arr[pollen_data][int(value)])
 
 @app.route('/uv-info/<city_name>/<value>', methods=['GET'])
 def get_uv_choice(city_name, value):
