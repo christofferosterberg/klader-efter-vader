@@ -122,8 +122,17 @@ function findClosestCity(latitude, longitude){
 }
 
 // function pinOnMap(latitude, longitude){
-//     marker.setLatLng([latitude, longitude])
-//     marker.addTo(map)
+//     // marker.setLatLng([latitude, longitude])
+//     // marker.addTo(map)
+//     icon = L.DomUtil.get('Göteborg-map')
+//     // icon.setPosition(position)
+//     L.DomUtil.setPosition(icon, position)
+//     // console.log(latitude)
+//     // console.log(longitude)
+//     // var div = $('<div></div>').height('50px').width('50px').css('background-color', 'blue')
+//     // var overlay = L.divOverlay().setLatLng([latitude, longitude])
+//     // overlay.setContent(div)
+//     // overlay.openOn(map)
 // }
 
 // function updateMarker(e){

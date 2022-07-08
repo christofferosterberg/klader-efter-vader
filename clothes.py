@@ -71,15 +71,15 @@ def create_clothes_struct():
     root.insert('precipitation', rain, 3, ['yes', 'yes', 'no', 'yes'])
     root.insert('wind_speed', windy, 3, ['no', 'yes', 'no', 'yes'])
     
-    root.insert_last(3, ['yes', 'yes', 'yes', 'yes'], ['en tunn regnjacka eller paraply'])
-    root.insert_last(3, ['no', 'yes', 'yes', 'yes'], ['långbyxor och långtröja, ta med något mot regn ifall att'])
-    root.insert_last(2, ['no', 'yes', 'yes'], ['långbyxor och långtröja, ta med något mot regn ifall att'])
-    root.insert_last(4, ['yes', 'yes', 'yes', 'no', 'yes'], ['paraply och regnjacka, ta inga ljusa byxor där det syns om de blir blöta'])
-    root.insert_last(4, ['no', 'yes', 'yes', 'no', 'yes'], ['en regnjacka och långbyxor'])
-    root.insert_last(4, ['yes', 'no', 'yes', 'no', 'yes'], ['en tunn jacka mot vinden eller varma kläder, det ska blåsa'])
-    root.insert_last(4, ['no', 'no', 'yes', 'no', 'yes'], ['en tunn långärmad tröja och ett par långbyxor'])
-    root.insert_last(3, ['yes', 'no', 'no', 'yes'], ['en tunn långärmad tröja och ett par långbyxor, det ska blåsa en del trots solen'])
-    root.insert_last(3, ['no', 'no', 'no', 'yes'], ['short och en go t-shirt'])
+    root.insert_last(3, ['yes', 'yes', 'yes', 'yes'], ['en tunn regnjacka eller paraply.'])
+    root.insert_last(3, ['no', 'yes', 'yes', 'yes'], ['långbyxor och långtröja, ta med något mot regn ifall att.'])
+    root.insert_last(2, ['no', 'yes', 'yes'], ['långbyxor och långtröja, ta med något mot regn ifall att.'])
+    root.insert_last(4, ['yes', 'yes', 'yes', 'no', 'yes'], ['paraply och regnjacka, ta inga ljusa byxor där det syns om de blir blöta.'])
+    root.insert_last(4, ['no', 'yes', 'yes', 'no', 'yes'], ['en regnjacka och långbyxor.'])
+    root.insert_last(4, ['yes', 'no', 'yes', 'no', 'yes'], ['en tunn jacka mot vinden eller varma kläder, det ska blåsa.'])
+    root.insert_last(4, ['no', 'no', 'yes', 'no', 'yes'], ['en tunn långärmad tröja och ett par långbyxor.'])
+    root.insert_last(3, ['yes', 'no', 'no', 'yes'], ['en tunn långärmad tröja och ett par långbyxor, det ska blåsa en del trots solen.'])
+    root.insert_last(3, ['no', 'no', 'no', 'yes'], ['short och en go t-shirt.'])
 
     return root
 
