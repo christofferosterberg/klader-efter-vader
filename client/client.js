@@ -1,8 +1,17 @@
 const host = 'http://localhost:3000/'
 var position = null
 
-
+// var map
+var allCities
+// var marker
 $('document').ready(function(){
+    // map = L.map('map').setView([61.34, 12.88], 5)
+    // map.on('click', updateMarker)
+    // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    //     maxZoom: 19,
+    //     attribution: '© OpenStreetMap'
+    // }).addTo(map)
+    // marker = L.marker()
     $('#all-cities-choice').val('')
     navigator.geolocation.getCurrentPosition((pos) => {
         position = {
@@ -21,8 +30,28 @@ function viewStart(){
         data: JSON.stringify(citiesOnMap),
         success: fillHomeWeather
     })
-    $('#see-clothes').click(viewCityPicker)
+    $.ajax({
+        url: host + 'cities',
+        type: 'GET',
+        success: autofillCity
+    })
     $("#chosen-city").change(showClothes)
+
+    $('#see-clothes').click(showClothes)
+    $('#update-clothes-btn').click(fetchClothes)
+    $('#cancel-clothes-btn').click(hideClothes)
+
+    $('#see-pollen').click(showPollenOptions)
+    $('.pollen-option').click(showPollen)
+    $('#update-pollen-btn').click(fetchPollen)
+    $('#cancel-pollen-btn').click(hidePollen)
+
+    $('#see-uv').click(showUVOptions)
+    $('.uv-option').click(showUV)
+    $('#update-uv-btn').click(fetchUV)
+    $('#cancel-uv-btn').click(hideUV)
+    
+    // $('#submit-city-btn').click(showClothes) 
 }
 
 function fillHomeWeather(resp){
@@ -49,7 +78,7 @@ function fillMap(weatherData){
         icon.css('margin-left', coordinatesForMap[weather.city_name][0])
         icon.css('margin-top', coordinatesForMap[weather.city_name][1])
 
-        $('#map').append(icon)
+        $('#my-map').append(icon)
     }
 }
 
@@ -59,46 +88,150 @@ function findWeatherInfo(allWeathers, targetCity){
     }
 }
 
-function viewCityPicker(){
-    
-    $('#see-clothes').addClass('d-none')
-    $('#select-city').removeClass('d-none')
-    $('#submit-city-btn').click(showClothes)
-    $.ajax({
-        url: host + 'cities',
-        type: 'GET',
-        success: autofillCity
-    })
-}
+// function viewCityPicker() {
+//     $('#see-clothes').addClass('d-none')
+//     $('#select-city').removeClass('d-none')
+//     setTimeout(function () {
+//         window.dispatchEvent(new Event('resize'));
+//     }, 10)
+// }
 
 function autofillCity(cities){
+    allCities = cities
     for (const city of cities){
         $('#cities-options').append($('<option>').attr('value', city.name))
     }
     if (position != null){
-        closestCity = cities[0]
-        closestDistance = Math.sqrt((cities[0].latitude-position['latitude'])**2 + (cities[0].longitude-position['longitude'])**2)
-        for (const city of cities){
-            distance = Math.sqrt(((city.latitude-position['latitude'])**2) + ((city.longitude-position['longitude'])**2))
+        closestCity = findClosestCity(position['latitude'], position['longitude'])
+        $('#all-cities-choice').val(closestCity.name)
+        // pinOnMap(closestCity.latitude, closestCity.longitude)
+    } else {L.marker([61.34, 13.88]).addTo(map)}
+}
+
+function findClosestCity(latitude, longitude){
+    closestCity = allCities[0]
+        closestDistance = Math.sqrt((allCities[0].latitude-latitude)**2 + (allCities[0].longitude-longitude)**2)
+        for (const city of allCities){
+            distance = Math.sqrt(((city.latitude-latitude)**2) + ((city.longitude-longitude)**2))
             if (distance < closestDistance){
                 closestCity = city
                 closestDistance = distance
             }
         }
-        $('#all-cities-choice').val(closestCity.name)
-    }
+        return closestCity
 }
 
+// function pinOnMap(latitude, longitude){
+//     // marker.setLatLng([latitude, longitude])
+//     // marker.addTo(map)
+//     icon = L.DomUtil.get('Göteborg-map')
+//     // icon.setPosition(position)
+//     L.DomUtil.setPosition(icon, position)
+//     // console.log(latitude)
+//     // console.log(longitude)
+//     // var div = $('<div></div>').height('50px').width('50px').css('background-color', 'blue')
+//     // var overlay = L.divOverlay().setLatLng([latitude, longitude])
+//     // overlay.setContent(div)
+//     // overlay.openOn(map)
+// }
+
+// function updateMarker(e){
+//     pinOnMap(e.latlng.lat, e.latlng.lng)
+//     closestCity = findClosestCity(e.latlng.lat, e.latlng.lng)
+//     $('#all-cities-choice').val(closestCity.name)
+// }
+
+// CLOTHES //
+
 function showClothes(){
+    $('#see-clothes').addClass('d-none')
+    $('#clothes-div').removeClass('d-none')
+    fetchClothes()
+}
+
+function hideClothes(){
+    $('#see-clothes').removeClass('d-none')
+    $('#clothes-div').addClass('d-none')
+    $('#clothes-info').empty()
+}
+
+function fetchClothes(){
     var selectedCity = $('#all-cities-choice').val()
     $.ajax({
         url: host + 'clothes-info/'+ selectedCity,
         type: 'GET',
-        success: showTheText
+        success: showClothesText
     })
 }
 
-function showTheText(resp){
+function showClothesText(resp){
     $('#clothes-info').empty()
     $('#clothes-info').append($('<p></p>').text(resp))
+}
+
+// POLLEN //
+
+function showPollenOptions(){
+    $('#see-pollen').addClass('d-none')
+    $('#choose-pollen-div').removeClass('d-none')
+}
+
+function showPollen(e){
+    console.log(e.currentTarget.value)
+    $('#choose-pollen-div').addClass('d-none')
+    $('#pollen-div').removeClass('d-none')
+    fetchPollen(e.currentTarget.value)
+}
+
+function hidePollen(){
+    $('#see-pollen').removeClass('d-none')
+    $('#pollen-div').addClass('d-none')
+    $('#pollen-info').empty()
+}
+
+function fetchPollen(value){
+    var selectedCity = $('#all-cities-choice').val()
+    $.ajax({
+        url: host + 'pollen-info/'+ selectedCity + '/' + value,
+        type: 'GET',
+        success: showPollenText
+    })
+}
+
+function showPollenText(resp){
+    $('#pollen-info').empty()
+    $('#pollen-info').append($('<p></p>').text(resp))
+}
+
+// UV //
+
+function showUVOptions(){
+    $('#see-uv').addClass('d-none')
+    $('#choose-uv-div').removeClass('d-none')
+}
+
+function showUV(e){
+    $('#choose-uv-div').addClass('d-none')
+    $('#uv-div').removeClass('d-none')
+    fetchUV(e.currentTarget.value)
+}
+
+function hideUV(){
+    $('#see-uv').removeClass('d-none')
+    $('#uv-div').addClass('d-none')
+    $('#uv-info').empty()
+}
+
+function fetchUV(value){
+    var selectedCity = $('#all-cities-choice').val()
+    $.ajax({
+        url: host + 'uv-info/'+ selectedCity + '/' + value,
+        type: 'GET',
+        success: showUVText
+    })
+}
+
+function showUVText(resp){
+    $('#uv-info').empty()
+    $('#uv-info').append($('<p></p>').text(resp))
 }
