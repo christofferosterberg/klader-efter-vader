@@ -3,6 +3,7 @@ from sqlalchemy import ForeignKey
 import requests
 from datetime import datetime
 from city import City
+import threading
 
 class Weather(db.Model):
     id            = db.Column(db.Integer, primary_key=True)
@@ -120,14 +121,16 @@ def get_latest_weather(city):
     print(weather)
     print(city)
     if weather == None:
-        fetch_weather(city)
+        thread = threading.Thread(target = fetch_weather(city))
+        thread.start()
         weather = Weather.query.filter_by(city_id = city.id,
                                       hour    = last_hour,
                                       day     = today.day,
                                       month   = today.month,
                                       year    = today.year).first()
     elif not up_to_date(weather):
-        update_weather(city)
+        thread = threading.Thread(target = update_weather(city))
+        thread.start()
         weather = Weather.query.filter_by(city_id = city.id,
                                       hour    = last_hour,
                                       day     = today.day,
