@@ -2,7 +2,7 @@ const host = 'http://localhost:3000/'
 var position = null
 
 // var map
-var allCities
+var allCities = null
 // var marker
 $('document').ready(function(){
     // map = L.map('map').setView([61.34, 12.88], 5)
@@ -18,6 +18,10 @@ $('document').ready(function(){
             'longitude': pos.coords.longitude,
             'latitude' : pos.coords.latitude
         }
+        if (allCities != null){
+            autofillCity()
+        }
+        
     })
     viewStart()
 })
@@ -33,7 +37,10 @@ function viewStart(){
     $.ajax({
         url: host + 'cities',
         type: 'GET',
-        success: autofillCity
+        success: function(resp){
+            allCities = resp
+            autofillCity()
+        }
     })
     $("#chosen-city").change(showClothes)
 
@@ -96,9 +103,8 @@ function findWeatherInfo(allWeathers, targetCity){
 //     }, 10)
 // }
 
-function autofillCity(cities){
-    allCities = cities
-    for (const city of cities){
+function autofillCity(){
+    for (const city of allCities){
         $('#cities-options').append($('<option>').attr('value', city.name))
     }
     if (position != null){
