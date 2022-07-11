@@ -11,7 +11,7 @@ class Weather(db.Model):
     month         = db.Column(db.Integer, nullable=False)
     year          = db.Column(db.Integer, nullable=False)
     fetched       = db.Column(db.DateTime, nullable=False)
-    description   = db.Column(db.Text(30), nullable=False)
+    description   = db.Column(db.Text(), nullable=False)
     value         = db.Column(db.Integer, nullable=False)
     temperature   = db.Column(db.Float, nullable=False)
     cloudiness    = db.Column(db.Integer, nullable=False)
