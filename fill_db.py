@@ -4,14 +4,17 @@ import json
 from app import app
 
 # imports city data from json-file to db, including names and coordinates
-with app.app_context():
-    db.drop_all()
-    db.create_all()
+def fill_db():
+    with app.app_context():
+        db.drop_all()
+        db.create_all()
 
-    f = open('cities.json')
-    cities = json.load(f)
-    uniqueCities = { each['name'] : each for each in cities }.values()
+        f = open('cities.json')
+        cities = json.load(f)
+        uniqueCities = { each['name'] : each for each in cities }.values()
 
-    for city in uniqueCities:
-        db.session.add(City(name=city['name'], longitude=city['longitude'], latitude=city['latitude']))
-        db.session.commit()
+        for city in uniqueCities:
+            db.session.add(City(name=city['name'], longitude=city['longitude'], latitude=city['latitude']))
+            db.session.commit()
+
+fill_db()
