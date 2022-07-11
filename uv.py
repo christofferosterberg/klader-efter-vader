@@ -1,5 +1,5 @@
 import requests
-from api_keys import OPEN_UV_KEY
+# from api_keys import OPEN_UV_KEY
 
 uv_arr = [
     ['Du behöver ingen solkräm idag :)', 'Du behöver ingen solkräm idag :)', 'Du behöver ingen solkräm idag :)'],
@@ -9,5 +9,5 @@ uv_arr = [
 
 def get_todays_uv(lat, lng):
     data = requests.get('https://api.openuv.io/api/v1/uv?lat='+str(lat)+'&lng='+str(lng),
-    headers={"Content-Type":"application/json", "x-access-token": OPEN_UV_KEY}).json()
+    headers={"Content-Type":"application/json", "x-access-token": '3ac3117b22b82e6e92b26b5298e47916'}).json()
     return data['result']['uv_max']

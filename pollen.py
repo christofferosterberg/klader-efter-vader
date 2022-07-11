@@ -1,5 +1,5 @@
 import requests
-from api_keys import AMBEE_KEY
+# from api_keys import AMBEE_KEY
 
 pollen_arr = [
     ['Du behöver inte ta någon pollenmedicin idag :)', 'Du behöver inte ta någon pollenmedicin idag :)', 'Om du är extremt allergisk och kan ha andningssvårigheter kan det vara bra med lite medicin idag'],
@@ -15,7 +15,7 @@ translate = {
 }
 def get_todays_pollen(latitude, longitude):
     data = requests.get('https://api.ambeedata.com/latest/pollen/by-lat-lng?lat='+str(latitude)+'&lng='+str(longitude),
-    headers={"Content-Type":"application/json", "x-api-key": AMBEE_KEY}).json()
+    headers={"Content-Type":"application/json", "x-api-key": 'e68ed44d9f2f0b3532af15d811549032a807063658f82cca642a229ce9a95832'}).json()
     grass=translate[data['data'][0]['Risk']['grass_pollen']]
     tree=translate[data['data'][0]['Risk']['tree_pollen']]
     weed=translate[data['data'][0]['Risk']['weed_pollen']]
