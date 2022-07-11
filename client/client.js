@@ -25,6 +25,7 @@ $('document').ready(function(){
 function viewStart(){
     $.ajax({
         url: host + 'weather',
+        crossDomain: true,
         contentType: "application/json",
         type: 'POST',
         data: JSON.stringify(citiesOnMap),
@@ -32,6 +33,7 @@ function viewStart(){
     })
     $.ajax({
         url: host + 'cities',
+        crossDomain: true,
         type: 'GET',
         success: autofillCity
     })
@@ -159,6 +161,7 @@ function fetchClothes(){
     var selectedCity = $('#all-cities-choice').val()
     $.ajax({
         url: host + 'clothes-info/'+ selectedCity,
+        crossDomain: true,
         type: 'GET',
         success: showClothesText
     })
@@ -193,6 +196,7 @@ function fetchPollen(value){
     var selectedCity = $('#all-cities-choice').val()
     $.ajax({
         url: host + 'pollen-info/'+ selectedCity + '/' + value,
+        crossDomain: true,
         type: 'GET',
         success: showPollenText
     })
@@ -226,6 +230,7 @@ function fetchUV(value){
     var selectedCity = $('#all-cities-choice').val()
     $.ajax({
         url: host + 'uv-info/'+ selectedCity + '/' + value,
+        crossDomain: true,
         type: 'GET',
         success: showUVText
     })
