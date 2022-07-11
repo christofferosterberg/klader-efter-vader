@@ -52,3 +52,16 @@
 }
 
 #map { height: 500px; }
+
+.cancel{
+    margin-top: 0.5rem;
+}
+
+@media screen and (max-width: 575px) {
+    .update{
+        margin-top: 0.5rem;
+    }
+    div.col-sm-3 {
+        padding-left: 0 !important;
+    }
+  }
