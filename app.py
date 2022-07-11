@@ -18,7 +18,7 @@ db.init_app(app)
 timezone = pytz.timezone('Europe/Stockholm')
 clothes_data = create_clothes_struct()
 
-host = 'http://localhost:3000'
+host = 'http://klader-efter-vader.herokuapp.com/'
 
 
 ######## ROUTES ##############

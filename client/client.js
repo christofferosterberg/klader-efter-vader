@@ -1,4 +1,4 @@
-const host = 'http://localhost:3000/'
+const host = 'http://klader-efter-vader.herokuapp.com/'
 var position = null
 
 // var map
