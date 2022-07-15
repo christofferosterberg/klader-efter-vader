@@ -18,7 +18,7 @@ app.config['JWT_SECRET_KEY'] = 'U0A6DRhYvG3XXgzWCUEGvu5F9UuvVCAiSYwicGbKIFpktoSb
 
 def update_db_weather():
     print('uppdaterar vädret')
-    weathers = Weather.query_all()
+    weathers = Weather.query.all()
     for weather in weathers:
         db.session.delete(weather)
         db.session.commit()
