@@ -13,7 +13,7 @@ from fill_db import *
 
 app = Flask(__name__, static_folder='client', static_url_path='/')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://lbcuyhayvwbcku:babaf72e4eb0efb1df68c3668856717078c523e5889aa0eb188276368eb725ed@ec2-54-228-218-84.eu-west-1.compute.amazonaws.com:5432/dfrvgluhcnpb47'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://xrpoqreqhsiilo:de4af35557999658292080d1bbb07fe66911689d266ac5e65a0cb2bcbef9aded@ec2-54-228-125-183.eu-west-1.compute.amazonaws.com:5432/dealfu4qjm0mc3'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'U0A6DRhYvG3XXgzWCUEGvu5F9UuvVCAiSYwicGbKIFpktoSb5WSgf7Fkp_YbAXhQ'
 
@@ -107,5 +107,5 @@ if __name__ == '__main__':
     scheduler.start()
 
     atexit.register(lambda: scheduler.shutdown())
-     
+
     app.run(debug=True, port=3000)
