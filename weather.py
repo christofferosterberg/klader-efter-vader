@@ -4,6 +4,7 @@ import requests
 from datetime import datetime
 from city import City
 import threading
+import pytz
 
 class Weather(db.Model):
     id            = db.Column(db.Integer, primary_key=True)
@@ -89,7 +90,9 @@ def fetch_weather(city):
                 precipitation = parameter['values'][0]
             elif parameter['name'] == 'ws':
                 wind_speed = parameter['values'][0]
-        newWeather = Weather(hour = hour, day = day, month = month, year = year, fetched = datetime.now(), description=description, 
+        now = datetime.now().astimezone(pytz.timezone('Europe/Stockholm'))
+
+        newWeather = Weather(hour = hour, day = day, month = month, year = year, fetched = now, description=description, 
         value=value, temperature=temperature, cloudiness=cloudiness, precipitation=precipitation, wind_speed=wind_speed, 
         city_id=city.id, city_name=city.name)
         db.session.add(newWeather)
