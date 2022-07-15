@@ -102,7 +102,7 @@ def update_db_weather():
 if __name__ == '__main__':
     update_db_weather()
     scheduler = BackgroundScheduler()
-    scheduler.add_job(func=update_db_weather(), trigger="cron", minute='*/1')
+    scheduler.add_job(func=update_db_weather(), trigger="interval", seconds='20')
     scheduler.start()
 
     atexit.register(lambda: scheduler.shutdown())
