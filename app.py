@@ -99,13 +99,15 @@ def update_db_weather():
         for city_name in cities_to_fetch:
             city = City.query.filter_by(name = city_name).first()
             fetch_weather(city)
+    print('uppdatering klar')
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=update_db_weather, trigger="interval", seconds=60)
+scheduler.add_job(func=update_db_weather, trigger="interval", minutes=60)
 scheduler.start()
 atexit.register(lambda: scheduler.shutdown())
 
 
 
 if __name__ == '__main__':
+    update_db_weather()
     app.run(debug=True, port=3000)
