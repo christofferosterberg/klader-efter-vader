@@ -91,7 +91,7 @@ def fetch_weather(city):
             elif parameter['name'] == 'ws':
                 wind_speed = parameter['values'][0]
         now = datetime.now()
-        now.tzinfo=timezone(timedelta(hours=1))
+        now.replace(tzinfo=timezone(timedelta(hours=1)))
 
         newWeather = Weather(hour = hour, day = day, month = month, year = year, fetched = now, description=description, 
         value=value, temperature=temperature, cloudiness=cloudiness, precipitation=precipitation, wind_speed=wind_speed, 
