@@ -121,6 +121,7 @@ def get_latest_weather(city):
     print(weather)
     print(city)
     if weather == None:
+        print("startar hämtning")
         thread = threading.Thread(target = fetch_weather(city))
         thread.start()
         weather = Weather.query.filter_by(city_id = city.id,
