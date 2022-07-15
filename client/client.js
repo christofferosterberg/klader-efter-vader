@@ -111,7 +111,8 @@ function autofillCity(){
         closestCity = findClosestCity(position['latitude'], position['longitude'])
         $('#all-cities-choice').val(closestCity.name)
         // pinOnMap(closestCity.latitude, closestCity.longitude)
-    } else {L.marker([61.34, 13.88]).addTo(map)}
+    } 
+    // else {L.marker([61.34, 13.88]).addTo(map)}
 }
 
 function findClosestCity(latitude, longitude){

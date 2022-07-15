@@ -114,8 +114,8 @@ def update_weather(city):
     fetch_weather(City.query.filter_by(id = city.id).first())
 
 def get_latest_weather(city):
-    last_hour = datetime.now().hour
-    today = datetime.now()
+    last_hour = datetime.now().astimezone(pytz.timezone('Europe/Stockholm')).hour
+    today = datetime.now().astimezone(pytz.timezone('Europe/Stockholm'))
     weather = Weather.query.filter_by(city_id = city.id,
                                       hour    = last_hour,
                                       day     = today.day,
@@ -124,16 +124,14 @@ def get_latest_weather(city):
     print(weather)
     print(city)
     if weather == None:
-        thread = threading.Thread(target = fetch_weather(city))
-        thread.start()
+        fetch_weather(city)
         weather = Weather.query.filter_by(city_id = city.id,
                                       hour    = last_hour,
                                       day     = today.day,
                                       month   = today.month,
                                       year    = today.year).first()
     elif not up_to_date(weather):
-        thread = threading.Thread(target = update_weather(city))
-        thread.start()
+        update_weather(city)
         weather = Weather.query.filter_by(city_id = city.id,
                                       hour    = last_hour,
                                       day     = today.day,
@@ -143,7 +141,7 @@ def get_latest_weather(city):
 
 
 def get_todays_weather(city):
-    today = datetime.now()
+    today = datetime.now().astimezone(pytz.timezone('Europe/Stockholm'))
     weather = Weather.query.filter_by(city_id = city.id,
                                       day     = today.day,
                                       month   = today.month,
