@@ -90,7 +90,8 @@ def fetch_weather(city):
                 precipitation = parameter['values'][0]
             elif parameter['name'] == 'ws':
                 wind_speed = parameter['values'][0]
-        now = datetime.now().astimezone(pytz.timezone('Europe/Stockholm')).strftime('%Y-%m-%d %H:%M:%S %Z%z')
+        now = datetime.now().astimezone(pytz.timezone('Europe/Stockholm'))
+        now.hour+=2
         print(now)
 
         newWeather = Weather(hour = hour, day = day, month = month, year = year, fetched = now, description=description, 
