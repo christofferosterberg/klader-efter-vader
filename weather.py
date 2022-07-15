@@ -110,7 +110,7 @@ def update_weather(city):
         db.session.commit()
     fetch_weather(City.query.filter_by(id = city.id).first())
 
-def get_latest_weather(city):
+async def get_latest_weather(city):
     last_hour = datetime.now().hour
     today = datetime.now()
     weather = Weather.query.filter_by(city_id = city.id,
@@ -122,15 +122,15 @@ def get_latest_weather(city):
     print(city)
     if weather == None:
         print("startar hämtning")
-        fetch_weather(city)
+        await fetch_weather(city)
         weather = Weather.query.filter_by(city_id = city.id,
                                       hour    = last_hour,
                                       day     = today.day,
                                       month   = today.month,
                                       year    = today.year).first()
     elif not up_to_date(weather):
-        thread = threading.Thread(target = update_weather(city))
-        thread.start()
+        print('ej uppdaterat. Uppdaterar nu...')
+        await update_weather(city)
         weather = Weather.query.filter_by(city_id = city.id,
                                       hour    = last_hour,
                                       day     = today.day,
@@ -139,14 +139,14 @@ def get_latest_weather(city):
     return weather
 
 
-async def get_todays_weather(city):
+def get_todays_weather(city):
     today = datetime.now()
     weather = Weather.query.filter_by(city_id = city.id,
                                       day     = today.day,
                                       month   = today.month,
                                       year    = today.year).all()
     if len(weather) == 0:
-        await fetch_weather(city)
+        fetch_weather(city)
         weather = Weather.query.filter_by(city_id = city.id,
                                       day     = today.day,
                                       month   = today.month,
