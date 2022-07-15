@@ -87,6 +87,7 @@ def get_uv_choice(city_name, value):
 
 
 def update_db_weather():
+    print('uppdaterar vädret')
     weathers = Weather.query_all()
     for weather in weathers:
         db.session.delete(weather)
