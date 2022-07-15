@@ -9,7 +9,6 @@ from uv import *
 import time
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
-from fill_db import *
 
 app = Flask(__name__, static_folder='client', static_url_path='/')
 
