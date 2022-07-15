@@ -101,7 +101,7 @@ def update_db_weather():
             fetch_weather(city)
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=update_db_weather, trigger="interval", seconds='20')
+scheduler.add_job(func=update_db_weather, trigger="interval", seconds=60)
 scheduler.start()
 atexit.register(lambda: scheduler.shutdown())
 
