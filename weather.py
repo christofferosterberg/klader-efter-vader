@@ -4,7 +4,6 @@ import requests
 from datetime import datetime
 from city import City
 import threading
-import asyncio
 
 class Weather(db.Model):
     id            = db.Column(db.Integer, primary_key=True)
