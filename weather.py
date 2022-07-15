@@ -1,7 +1,7 @@
 from base import db
 from sqlalchemy import ForeignKey
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 from city import City
 import threading
 import pytz
@@ -90,9 +90,7 @@ def fetch_weather(city):
                 precipitation = parameter['values'][0]
             elif parameter['name'] == 'ws':
                 wind_speed = parameter['values'][0]
-        now = datetime.astimezone(pytz.timezone('Europe/Stockholm')).now()
-        now.hour+=2
-        print(now)
+        now = datetime.now().timezone(timedelta(hours=1))
 
         newWeather = Weather(hour = hour, day = day, month = month, year = year, fetched = now, description=description, 
         value=value, temperature=temperature, cloudiness=cloudiness, precipitation=precipitation, wind_speed=wind_speed, 
