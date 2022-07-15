@@ -6,7 +6,6 @@ from base import db
 from weather import *
 from pollen import *
 from uv import *
-import asyncio
 
 app = Flask(__name__, static_folder='client', static_url_path='/')
 
@@ -35,8 +34,8 @@ async def weather():
         wanted_cities = request.json
         weather_data = []
         for city in wanted_cities:
-            the_city = City.query.filter_by(name=city).first()
-            await asyncio.gather(weather = get_latest_weather(the_city))
+            the_city = await City.query.filter_by(name=city).first()
+            weather = await get_latest_weather(the_city)
             weather_data.append(weather.serialize())
         return jsonify(weather_data)
 

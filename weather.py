@@ -65,10 +65,10 @@ def translate_weather_description(value):
     }
     return weather_info[value]
 
-def fetch_weather(city):
+async def fetch_weather(city):
     lon = int(round(city.longitude, 0))
     lat = int(round(city.latitude, 0))
-    data = requests.get('https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/'+str(lon)+'/lat/'+str(lat)+'/data.json').json()
+    data = await requests.get('https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/'+str(lon)+'/lat/'+str(lat)+'/data.json').json()
     time_series = data['timeSeries']
     
     for time_serie in time_series:
@@ -123,8 +123,8 @@ async def get_latest_weather(city):
     print(city)
     if weather == None:
         print("startar hämtning")
-        await asyncio.gather(fetch_weather(city))
-        weather = Weather.query.filter_by(city_id = city.id,
+        await fetch_weather(city)
+        weather = await Weather.query.filter_by(city_id = city.id,
                                       hour    = last_hour,
                                       day     = today.day,
                                       month   = today.month,
