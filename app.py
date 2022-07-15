@@ -6,12 +6,17 @@ from base import db
 from weather import *
 from pollen import *
 from uv import *
+import time
+import atexit
+from apscheduler.schedulers.background import BackgroundScheduler
 
 app = Flask(__name__, static_folder='client', static_url_path='/')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://lbcuyhayvwbcku:babaf72e4eb0efb1df68c3668856717078c523e5889aa0eb188276368eb725ed@ec2-54-228-218-84.eu-west-1.compute.amazonaws.com:5432/dfrvgluhcnpb47'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://xrpoqreqhsiilo:de4af35557999658292080d1bbb07fe66911689d266ac5e65a0cb2bcbef9aded@ec2-54-228-125-183.eu-west-1.compute.amazonaws.com:5432/dealfu4qjm0mc3'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'U0A6DRhYvG3XXgzWCUEGvu5F9UuvVCAiSYwicGbKIFpktoSb5WSgf7Fkp_YbAXhQ'
+
+
 
 db.init_app(app)
 
@@ -82,5 +87,27 @@ def get_uv_choice(city_name, value):
         return jsonify(uv_arr[3][int(value)])
 
 
+def update_db_weather():
+    print('uppdaterar vädret')
+    with app.app_context():
+        weathers = Weather.query.all()
+        for weather in weathers:
+            db.session.delete(weather)
+            db.session.commit()
+        cities_to_fetch = ['Stockholm', 'Göteborg', 'Malmö', 'Kalmar', 'Jönköping','Visby', 'Karlstad', 
+        'Gävle', 'Mora', 'Sundsvall', 'Östersund', 'Umeå', 'Luleå', 'Tärnaby', 'Kiruna']
+        for city_name in cities_to_fetch:
+            city = City.query.filter_by(name = city_name).first()
+            fetch_weather(city)
+    print('uppdatering klar')
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=update_db_weather, trigger="interval", minutes=60)
+scheduler.start()
+atexit.register(lambda: scheduler.shutdown())
+
+
+
 if __name__ == '__main__':
+    update_db_weather()
     app.run(debug=True, port=3000)
