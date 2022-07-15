@@ -34,7 +34,7 @@ async def weather():
         wanted_cities = request.json
         weather_data = []
         for city in wanted_cities:
-            the_city = await City.query.filter_by(name=city).first()
+            the_city = City.query.filter_by(name=city).first()
             weather = await get_latest_weather(the_city)
             weather_data.append(weather.serialize())
         return jsonify(weather_data)
