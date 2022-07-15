@@ -97,7 +97,7 @@ def update_db_weather():
         cities_to_fetch = ['Stockholm', 'Göteborg', 'Malmö', 'Kalmar', 'Jönköping','Visby', 'Karlstad', 
         'Gävle', 'Mora', 'Sundsvall', 'Östersund', 'Umeå', 'Luleå', 'Tärnaby', 'Kiruna']
         for city_name in cities_to_fetch:
-            city = City.query.filter_by(name = city_name)
+            city = City.query.filter_by(name = city_name).first()
             fetch_weather(city)
 
 scheduler = BackgroundScheduler()
