@@ -6,6 +6,10 @@ from base import db
 from weather import *
 from pollen import *
 from uv import *
+import time
+import atexit
+from apscheduler.schedulers.background import BackgroundScheduler
+from fill_db import *
 
 app = Flask(__name__, static_folder='client', static_url_path='/')
 
@@ -82,5 +86,26 @@ def get_uv_choice(city_name, value):
         return jsonify(uv_arr[3][int(value)])
 
 
+
+def update_db_weather():
+    weathers = Weather.query_all()
+    for weather in weathers:
+        db.session.delete(weather)
+        db.session.commit()
+    cities_to_fetch = ['Stockholm', 'Göteborg', 'Malmö', 'Kalmar', 'Jönköping','Visby', 'Karlstad', 
+    'Gävle', 'Mora', 'Sundsvall', 'Östersund', 'Umeå', 'Luleå', 'Tärnaby', 'Kiruna']
+    for city_name in cities_to_fetch:
+        city = City.query.filter_by(name = city_name)
+        fetch_weather(city)
+
+
 if __name__ == '__main__':
+    fill_db()
+    update_db_weather()
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(func=update_db_weather(), trigger="cron", minute='*/1')
+    scheduler.start()
+
+    atexit.register(lambda: scheduler.shutdown())
+     
     app.run(debug=True, port=3000)
