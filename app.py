@@ -89,15 +89,16 @@ def get_uv_choice(city_name, value):
 
 def update_db_weather():
     print('uppdaterar vädret')
-    weathers = Weather.query.all()
-    for weather in weathers:
-        db.session.delete(weather)
-        db.session.commit()
-    cities_to_fetch = ['Stockholm', 'Göteborg', 'Malmö', 'Kalmar', 'Jönköping','Visby', 'Karlstad', 
-    'Gävle', 'Mora', 'Sundsvall', 'Östersund', 'Umeå', 'Luleå', 'Tärnaby', 'Kiruna']
-    for city_name in cities_to_fetch:
-        city = City.query.filter_by(name = city_name)
-        fetch_weather(city)
+    with app.app_context():
+        weathers = Weather.query.all()
+        for weather in weathers:
+            db.session.delete(weather)
+            db.session.commit()
+        cities_to_fetch = ['Stockholm', 'Göteborg', 'Malmö', 'Kalmar', 'Jönköping','Visby', 'Karlstad', 
+        'Gävle', 'Mora', 'Sundsvall', 'Östersund', 'Umeå', 'Luleå', 'Tärnaby', 'Kiruna']
+        for city_name in cities_to_fetch:
+            city = City.query.filter_by(name = city_name)
+            fetch_weather(city)
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=update_db_weather(), trigger="interval", seconds='20')
