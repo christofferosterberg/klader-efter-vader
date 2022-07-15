@@ -139,14 +139,14 @@ def get_latest_weather(city):
     return weather
 
 
-def get_todays_weather(city):
+async def get_todays_weather(city):
     today = datetime.now()
     weather = Weather.query.filter_by(city_id = city.id,
                                       day     = today.day,
                                       month   = today.month,
                                       year    = today.year).all()
     if len(weather) == 0:
-        fetch_weather(city)
+        await fetch_weather(city)
         weather = Weather.query.filter_by(city_id = city.id,
                                       day     = today.day,
                                       month   = today.month,
