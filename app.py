@@ -100,7 +100,7 @@ def get_uv_choice(city_name, value):
 
 
 if __name__ == '__main__':
-    fill_db()
+    # fill_db()
     # update_db_weather()
     # scheduler = BackgroundScheduler()
     # scheduler.add_job(func=update_db_weather(), trigger="cron", minute='*/1')
