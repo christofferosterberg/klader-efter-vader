@@ -4,6 +4,7 @@ import requests
 from datetime import datetime
 from city import City
 import threading
+import asyncio
 
 class Weather(db.Model):
     id            = db.Column(db.Integer, primary_key=True)
@@ -110,7 +111,7 @@ def update_weather(city):
         db.session.commit()
     fetch_weather(City.query.filter_by(id = city.id).first())
 
-def get_latest_weather(city):
+async def get_latest_weather(city):
     last_hour = datetime.now().hour
     today = datetime.now()
     weather = Weather.query.filter_by(city_id = city.id,
@@ -122,8 +123,7 @@ def get_latest_weather(city):
     print(city)
     if weather == None:
         print("startar hämtning")
-        thread = threading.Thread(target = fetch_weather(city))
-        thread.start()
+        await asyncio.gather(fetch_weather(city))
         weather = Weather.query.filter_by(city_id = city.id,
                                       hour    = last_hour,
                                       day     = today.day,
