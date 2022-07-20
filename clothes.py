@@ -10,14 +10,13 @@ windy = 5.0
 class Last_Node:
     def __init__(self, texts):
         self.texts = texts
-    def get_clothes(self):
+    def find_clothes(self, data):
         return self.texts[0]
 
 class Node:
     def __init__(self, search_word, answer):
         self.yes = None
         self.no = None
-        self.last_node = False
         self.search_word = search_word
         self.answer = answer
 
@@ -36,7 +35,6 @@ class Node:
 
     def insert_last(self, level, answers, texts):
         if level == 0:
-            self.last_node = True
             if answers[0] == 'yes':
                 self.yes = Last_Node(texts)
             else:
@@ -48,16 +46,10 @@ class Node:
                 self.no.insert_last(level-1, answers, texts)
 
     def find_clothes(self, weather_data):
-        if self.last_node:
-            if weather_data[self.search_word] > self.answer:
-                return self.yes.get_clothes()
-            else:
-                return self.no.get_clothes()
+        if weather_data[self.search_word] > self.answer:
+            return self.yes.find_clothes(weather_data)
         else:
-            if weather_data[self.search_word] > self.answer:
-                return self.yes.find_clothes(weather_data)
-            else:
-                return self.no.find_clothes(weather_data)
+            return self.no.find_clothes(weather_data)
 
 def create_clothes_struct():
     root = Node('temperature', warm)
@@ -68,18 +60,19 @@ def create_clothes_struct():
     root.insert('cloudiness', cloudy, 1, ['no', 'yes'])
     root.insert('wind_speed', windy, 2, ['no', 'no', 'yes'])
     root.insert('precipitation', rain, 2, ['yes', 'no', 'yes'])
-    root.insert('precipitation', rain, 3, ['yes', 'yes', 'no', 'yes'])
+    root.insert('precipitation', heavy_rain, 3, ['yes', 'yes', 'no', 'yes'])
     root.insert('wind_speed', windy, 3, ['no', 'yes', 'no', 'yes'])
-    
+
+
     root.insert_last(3, ['yes', 'yes', 'yes', 'yes'], ['en tunn regnjacka eller paraply.'])
     root.insert_last(3, ['no', 'yes', 'yes', 'yes'], ['långbyxor och långtröja, ta med något mot regn ifall att.'])
-    root.insert_last(2, ['no', 'yes', 'yes'], ['långbyxor och långtröja, ta med något mot regn ifall att.'])
+    root.insert_last(2, ['no', 'yes', 'yes'], ['shorts eller kjol och en go t-shirt.'])
     root.insert_last(4, ['yes', 'yes', 'yes', 'no', 'yes'], ['paraply och regnjacka, ta inga ljusa byxor där det syns om de blir blöta.'])
     root.insert_last(4, ['no', 'yes', 'yes', 'no', 'yes'], ['en regnjacka och långbyxor.'])
     root.insert_last(4, ['yes', 'no', 'yes', 'no', 'yes'], ['en tunn jacka mot vinden eller varma kläder, det ska blåsa.'])
     root.insert_last(4, ['no', 'no', 'yes', 'no', 'yes'], ['en tunn långärmad tröja och ett par långbyxor.'])
     root.insert_last(3, ['yes', 'no', 'no', 'yes'], ['en tunn långärmad tröja och ett par långbyxor, det ska blåsa en del trots solen.'])
-    root.insert_last(3, ['no', 'no', 'no', 'yes'], ['short och en go t-shirt.'])
+    root.insert_last(3, ['no', 'no', 'no', 'yes'], ['shorts och en go t-shirt.'])
 
     return root
 
