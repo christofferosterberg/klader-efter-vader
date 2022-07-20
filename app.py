@@ -9,21 +9,19 @@ from uv import *
 import time
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
+from host_variables import *
 
 app = Flask(__name__, static_folder='client', static_url_path='/')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://xrpoqreqhsiilo:de4af35557999658292080d1bbb07fe66911689d266ac5e65a0cb2bcbef9aded@ec2-54-228-125-183.eu-west-1.compute.amazonaws.com:5432/dealfu4qjm0mc3'
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'U0A6DRhYvG3XXgzWCUEGvu5F9UuvVCAiSYwicGbKIFpktoSb5WSgf7Fkp_YbAXhQ'
-
 
 
 db.init_app(app)
 
 timezone = pytz.timezone('Europe/Stockholm')
 clothes_data = create_clothes_struct()
-
-host = 'http://klader-efter-vader.herokuapp.com/'
 
 
 ######## ROUTES ##############

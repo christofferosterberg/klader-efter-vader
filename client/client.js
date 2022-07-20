@@ -1,4 +1,3 @@
-const host = 'https://klader-efter-vader.herokuapp.com/'
 var position = null
 
 // var map
