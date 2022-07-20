@@ -1,0 +1,1 @@
+const host = 'https://klader-efter-vader.herokuapp.com/'
