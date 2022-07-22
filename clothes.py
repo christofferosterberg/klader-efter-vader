@@ -1,7 +1,7 @@
 
 chilly = 0
 warm = 10
-hot = 17
+hot = 20
 rain = 0.1
 heavy_rain = 1.0
 cloudy = 5
