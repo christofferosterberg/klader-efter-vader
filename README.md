@@ -4,6 +4,9 @@ An application that tells you what clothes to put on for a day
 ## Installation:
 
 1. Open terminal, navigate to the cloned git-repo and checkout the develop branch (main is used for the deployed version and will not work locally).
+```
+git checkout origin/main
+```
 2. Create the virtual environment (python needs to be installed):
 ```
 python3 -m venv venv
