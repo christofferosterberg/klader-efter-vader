@@ -42,6 +42,12 @@ def weather():
             weather_data.append(weather.serialize())
         return jsonify(weather_data)
 
+@app.route('/weather/<city_name>', methods=['GET'])
+def one_weather(city_name):
+    the_city = City.query.filter_by(name=city_name).first()
+    weather = get_latest_weather(the_city)
+    return jsonify(weather.serialize())
+
 
 @app.route('/cities', methods=['GET'])
 def getCityNames():
