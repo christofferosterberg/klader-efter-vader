@@ -6,7 +6,6 @@ from base import db
 from weather import *
 from pollen import *
 from uv import *
-import time
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
 from host_variables import *
@@ -59,6 +58,8 @@ def getCityNames():
 @app.route('/clothes-info/<city_name>', methods=['GET'])
 def get_clothes_choice(city_name):
     city = City.query.filter_by(name=city_name).first()
+    if city == None:
+        return jsonify('Den angivna staden finns inte.')
     weather = get_todays_weather(city)
     weather1 = get_clothes(weather[1])
     if datetime.now().hour <= 17:
@@ -73,12 +74,16 @@ def get_clothes_choice(city_name):
 @app.route('/pollen-info/<city_name>/<value>', methods=['GET'])
 def get_pollen_choice(city_name, value):
     city = City.query.filter_by(name=city_name).first()
+    if city == None:
+        return jsonify('Den angivna staden finns inte.')
     pollen_data = get_todays_pollen(city.latitude, city.longitude)
     return jsonify(pollen_arr[pollen_data][int(value)])
 
 @app.route('/uv-info/<city_name>/<value>', methods=['GET'])
 def get_uv_choice(city_name, value):
     city = City.query.filter_by(name=city_name).first()
+    if city == None:
+        return jsonify('Den angivna staden finns inte.')
     uv_data = get_todays_uv(city.latitude, city.longitude)
     print(uv_data)
     if uv_data < 5:

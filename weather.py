@@ -1,9 +1,8 @@
 from base import db
 from sqlalchemy import ForeignKey
 import requests
-from datetime import datetime, timedelta, timezone
+from datetime import datetime
 from city import City
-import threading
 import pytz
 
 class Weather(db.Model):
@@ -121,8 +120,6 @@ def get_latest_weather(city):
                                       day     = today.day,
                                       month   = today.month,
                                       year    = today.year).first()
-    # print(weather)
-    # print(city)
     if weather == None:
         fetch_weather(city)
         weather = Weather.query.filter_by(city_id = city.id,
