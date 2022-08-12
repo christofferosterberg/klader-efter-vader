@@ -124,6 +124,9 @@ function hideClothes(){
 
 function fetchClothes(){
     var selectedCity = $('#all-cities-choice').val()
+    if (selectedCity == null) {
+        selectedCity = '-1'
+    }
     $.ajax({
         url: host + 'clothes-info/'+ selectedCity,
         type: 'GET',
