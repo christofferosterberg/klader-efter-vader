@@ -1,5 +1,4 @@
 import requests
-# from api_keys import OPEN_UV_KEY
 
 uv_arr = [
     ['Du behöver ingen solkräm idag :)', 'Du behöver ingen solkräm idag :)', 'Du behöver ingen solkräm idag :)'],
