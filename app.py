@@ -110,10 +110,10 @@ def update_db_weather():
             fetch_weather(city)
     print('uppdatering klar')
 
-scheduler = BackgroundScheduler()
-scheduler.add_job(func=update_db_weather, trigger="interval", minutes=60)
-scheduler.start()
-atexit.register(lambda: scheduler.shutdown())
+# scheduler = BackgroundScheduler()
+# scheduler.add_job(func=update_db_weather, trigger="interval", minutes=60)
+# scheduler.start()
+# atexit.register(lambda: scheduler.shutdown())
 
 
 # update_db_weather()
