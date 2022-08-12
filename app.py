@@ -75,13 +75,13 @@ def get_uv_choice(city_name, value):
     city = City.query.filter_by(name=city_name).first()
     uv_data = get_todays_uv(city.latitude, city.longitude)
     print(uv_data)
-    if uv_data < 5:
+    if uv_data < 2:
         return jsonify(uv_arr[0][int(value)])
-    elif 5 < uv_data < 8:
+    elif 2 < uv_data < 4:
         return jsonify(uv_arr[1][int(value)])
-    elif 8 < uv_data < 11:
+    elif 4 < uv_data < 7:
         return jsonify(uv_arr[2][int(value)])
-    elif 11 < uv_data:
+    elif 7 < uv_data:
         return jsonify(uv_arr[3][int(value)])
 
 
