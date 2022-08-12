@@ -7,8 +7,6 @@ class City(db.Model):
     longitude = db.Column(db.Float, nullable=True)
     latitude  = db.Column(db.Float, nullable=True)
     weathers  = relationship('Weather')
-    # pollens   = relationship('Pollen')
-    # uvs       = relationship('UV')
 
     def __repr__(self):
         return '<City {}: {} {} {}>'.format(self.id, self.name, self.longitude, self.latitude)

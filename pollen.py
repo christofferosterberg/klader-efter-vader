@@ -1,5 +1,4 @@
 import requests
-# from api_keys import AMBEE_KEY
 
 pollen_arr = [
     ['Du behöver inte ta någon pollenmedicin idag :)', 'Du behöver inte ta någon pollenmedicin idag :)', 'Om du är extremt allergisk och kan ha andningssvårigheter kan det vara bra med lite medicin idag'],

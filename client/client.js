@@ -1,16 +1,7 @@
 var position = null
-
-// var map
 var allCities = null
-// var marker
+
 $('document').ready(function(){
-    // map = L.map('map').setView([61.34, 12.88], 5)
-    // map.on('click', updateMarker)
-    // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    //     maxZoom: 19,
-    //     attribution: '© OpenStreetMap'
-    // }).addTo(map)
-    // marker = L.marker()
     $('#all-cities-choice').val('')
     navigator.geolocation.getCurrentPosition((pos) => {
         position = {
@@ -94,14 +85,6 @@ function findWeatherInfo(allWeathers, targetCity){
     }
 }
 
-// function viewCityPicker() {
-//     $('#see-clothes').addClass('d-none')
-//     $('#select-city').removeClass('d-none')
-//     setTimeout(function () {
-//         window.dispatchEvent(new Event('resize'));
-//     }, 10)
-// }
-
 function autofillCity(){
     for (const city of allCities){
         $('#cities-options').append($('<option>').attr('value', city.name))
@@ -109,9 +92,7 @@ function autofillCity(){
     if (position != null){
         closestCity = findClosestCity(position['latitude'], position['longitude'])
         $('#all-cities-choice').val(closestCity.name)
-        // pinOnMap(closestCity.latitude, closestCity.longitude)
     } 
-    // else {L.marker([61.34, 13.88]).addTo(map)}
 }
 
 function findClosestCity(latitude, longitude){
@@ -126,26 +107,6 @@ function findClosestCity(latitude, longitude){
         }
         return closestCity
 }
-
-// function pinOnMap(latitude, longitude){
-//     // marker.setLatLng([latitude, longitude])
-//     // marker.addTo(map)
-//     icon = L.DomUtil.get('Göteborg-map')
-//     // icon.setPosition(position)
-//     L.DomUtil.setPosition(icon, position)
-//     // console.log(latitude)
-//     // console.log(longitude)
-//     // var div = $('<div></div>').height('50px').width('50px').css('background-color', 'blue')
-//     // var overlay = L.divOverlay().setLatLng([latitude, longitude])
-//     // overlay.setContent(div)
-//     // overlay.openOn(map)
-// }
-
-// function updateMarker(e){
-//     pinOnMap(e.latlng.lat, e.latlng.lng)
-//     closestCity = findClosestCity(e.latlng.lat, e.latlng.lng)
-//     $('#all-cities-choice').val(closestCity.name)
-// }
 
 // CLOTHES //
 
