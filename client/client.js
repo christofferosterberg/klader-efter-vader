@@ -124,7 +124,7 @@ function hideClothes(){
 
 function fetchClothes(){
     var selectedCity = $('#all-cities-choice').val()
-    if (selectedCity == null) {
+    if (selectedCity == '') {
         selectedCity = '-1'
     }
     $.ajax({
