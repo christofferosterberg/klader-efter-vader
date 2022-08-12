@@ -116,6 +116,6 @@ scheduler.start()
 atexit.register(lambda: scheduler.shutdown())
 
 
-update_db_weather()
+# update_db_weather()
 if __name__ == '__main__':
     app.run(debug=True, port=3000)
